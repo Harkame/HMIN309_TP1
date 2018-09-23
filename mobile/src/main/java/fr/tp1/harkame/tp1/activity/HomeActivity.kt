@@ -10,7 +10,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import com.tutorialkart.sqlitetutorial.EventDBHelper
+import fr.tp1.harkame.tp1.db.helper.EventDBHelper
 import fr.tp1.harkame.tp1.DateUtils
 import fr.tp1.harkame.tp1.R
 import kotlinx.android.synthetic.main.activity_main.*
@@ -44,7 +44,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val eventsText = ArrayList<String>()
 
         for (event in events) {
-            eventsText.add(event.name + " - " + DateUtils.localDateTimeToString(event.date) + " - " + event.type)
+            eventsText.add(event.name + " - " + DateUtils.localDateToString(event.date) + " - " + event.type)
         }
 
         val eventList = findViewById<ListView>(R.id.list_events)

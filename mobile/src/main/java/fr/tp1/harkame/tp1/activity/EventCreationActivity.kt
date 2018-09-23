@@ -1,23 +1,23 @@
 package fr.tp1.harkame.tp1.activity
 
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.NavigationView
-import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
-import android.view.Menu
-import android.view.MenuItem
+import android.widget.Button
 import android.widget.EditText
-import com.tutorialkart.sqlitetutorial.EventDBHelper
+import android.widget.Toast
+import fr.tp1.harkame.tp1.db.helper.EventDBHelper
 import fr.tp1.harkame.tp1.EventModel
 import fr.tp1.harkame.tp1.R
 import kotlinx.android.synthetic.main.activity_event_creation.*
-import kotlinx.android.synthetic.main.activity_main.*
-import java.time.LocalDateTime
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.*
 
-class EventCreationActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class EventCreationActivity : AppCompatActivity() {
 
-    lateinit var eventDBHelper : EventDBHelper
+    private lateinit var eventDBHelper : EventDBHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,49 +25,56 @@ class EventCreationActivity : AppCompatActivity(), NavigationView.OnNavigationIt
 
         eventDBHelper = EventDBHelper(this)
 
-        eventCreationValidate.setOnClickListener { view ->
+        val eventCreationDateButton = findViewById<Button>(R.id.eventCreationDate);
+
+        eventCreationDateButton.text =  LocalDate.parse(LocalDate.now().toString(), DateTimeFormatter.ISO_LOCAL_DATE).toString()
+
+        eventCreationDateButton.setOnClickListener {
+            val now = Calendar.getInstance()
+            val datePickerDialog = DatePickerDialog(this, DatePickerDialog.OnDateSetListener {view, year, month, dayOfMonth ->
+                eventCreationDateButton.text = LocalDate.of(year, month + 1, dayOfMonth).toString()
+            },
+                    now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH))
+
+            datePickerDialog.datePicker.minDate = System.currentTimeMillis()
+            datePickerDialog.show()
+        }
+
+        eventCreationValidate.setOnClickListener {
+
+            var validEvent = true
 
             val eventName = findViewById<EditText>(R.id.eventCreationName).text.toString()
-            val eventDate = findViewById<EditText>(R.id.eventCreationName).text.toString()
-            val eventType = findViewById<EditText>(R.id.eventCreationName).text.toString()
 
-            val localDateTime = LocalDateTime.now();
+            if(eventName.isEmpty()) {
+                Toast.makeText(applicationContext,
+                        "Titre invalide", Toast.LENGTH_LONG).show()
 
-            eventDBHelper.insertEvent(EventModel(eventName, localDateTime, eventType))
-
-            val intent = Intent(this, HomeActivity::class.java).apply {
-
+                validEvent = false
             }
-            startActivity(intent)
+
+            val eventDate = findViewById<Button>(R.id.eventCreationDate).text.toString()
+
+            val eventType = findViewById<EditText>(R.id.eventCreationType).text.toString()
+
+            if(eventType.isEmpty()) {
+                Toast.makeText(applicationContext,
+                        "Type invalide", Toast.LENGTH_LONG).show()
+
+                validEvent = false
+            }
+
+            if(validEvent) {
+
+                val localDate = LocalDate.parse(eventDate, DateTimeFormatter.ISO_LOCAL_DATE)
+
+                eventDBHelper.insertEvent(EventModel(eventName, localDate, eventType))
+
+                val intent = Intent(this, HomeActivity::class.java).apply {
+
+                }
+                startActivity(intent)
+            }
         }
-    }
-
-    override fun onBackPressed() {
-        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-            drawer_layout.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_settings -> return true
-            else -> return super.onOptionsItemSelected(item)
-        }
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-
-        }
-
-        drawer_layout.closeDrawer(GravityCompat.START)
-        return true
     }
 }

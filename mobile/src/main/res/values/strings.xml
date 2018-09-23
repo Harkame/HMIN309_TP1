@@ -8,4 +8,10 @@
     <string name="action_settings">Settings</string>
     <string name="home">Accueil</string>
     <string name="search">Recherche</string>
+    <string name="title">Titre</string>
+    <string name="type">Type</string>
+    <string name="my_event">Mon event</string>
+    <string name="example_sport">Exemple : Sport</string>
+    <string name="date">Date</string>
+    <string name="example_my_event">Exemple : Mon event</string>
 </resources>
