@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import fr.tp1.harkame.tp1.R
-import fr.tp1.harkame.tp1.db.model.Item
 import fr.tp1.harkame.tp1.db.model.ViewHolder
 import android.widget.CheckBox
 import android.widget.TextView
