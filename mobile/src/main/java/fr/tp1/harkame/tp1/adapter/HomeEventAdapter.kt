@@ -46,7 +46,7 @@ class HomeEventAdapter internal constructor(private val context: Context, privat
 
             viewHolder.checkBox = rowView!!.findViewById(R.id.rowEventCheckBox)
             viewHolder.text = rowView.findViewById(R.id.rowEventText)
-            rowView!!.setTag(viewHolder)
+            rowView.setTag(viewHolder)
         } else {
             viewHolder = rowView.getTag() as ViewHolder
         }

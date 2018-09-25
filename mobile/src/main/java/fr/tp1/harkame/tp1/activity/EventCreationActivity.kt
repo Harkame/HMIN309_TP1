@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.activity_event_creation.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
+import kotlin.jvm.java
 
 class EventCreationActivity : AppCompatActivity() {
 
