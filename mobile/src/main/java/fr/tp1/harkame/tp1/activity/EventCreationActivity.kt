@@ -31,7 +31,7 @@ class EventCreationActivity : AppCompatActivity() {
 
         eventCreationDateButton.setOnClickListener {
             val now = Calendar.getInstance()
-            val datePickerDialog = DatePickerDialog(this, DatePickerDialog.OnDateSetListener {view, year, month, dayOfMonth ->
+            val datePickerDialog = DatePickerDialog(this, DatePickerDialog.OnDateSetListener {_, year, month, dayOfMonth ->
                 eventCreationDateButton.text = LocalDate.of(year, month + 1, dayOfMonth).toString()
             },
                     now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH))

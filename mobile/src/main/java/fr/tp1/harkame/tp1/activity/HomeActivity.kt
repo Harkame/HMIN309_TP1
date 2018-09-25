@@ -13,6 +13,7 @@ import android.widget.ListView
 import fr.tp1.harkame.tp1.db.helper.EventDBHelper
 import fr.tp1.harkame.tp1.DateUtils
 import fr.tp1.harkame.tp1.R
+import fr.tp1.harkame.tp1.adapter.HomeEventAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
@@ -20,12 +21,14 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private lateinit var eventDBHelper: EventDBHelper
 
+    var homeEventAdapter: HomeEventAdapter? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener { view ->
+        fab.setOnClickListener { _ ->
             val intent = Intent(this, EventCreationActivity::class.java).apply {
 
             }
