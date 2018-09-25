@@ -34,6 +34,7 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         values.put(DBContract.EventEntry.COLUMN_NAME, event.name)
         values.put(DBContract.EventEntry.COLUMN_DATE, DateUtils.localDateToString(event.date))
         values.put(DBContract.EventEntry.COLUMN_TYPE, event.type)
+        values.put(DBContract.EventEntry.COLUMN_DESCRIPTION, event.description)
 
         db.insert(DBContract.EventEntry.TABLE_NAME, null, values)
 
@@ -49,7 +50,8 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
                         DBContract.EventEntry.COLUMN_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                         DBContract.EventEntry.COLUMN_NAME + " TEXT," +
                         DBContract.EventEntry.COLUMN_DATE + " DATE," +
-                        DBContract.EventEntry.COLUMN_TYPE + " TEXT)"
+                        DBContract.EventEntry.COLUMN_TYPE + " TEXT," +
+                        DBContract.EventEntry.COLUMN_DESCRIPTION + " TEXT)"
 
         private const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + DBContract.EventEntry.TABLE_NAME
     }
@@ -68,13 +70,16 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         var eventName: String
         var eventDate: LocalDate
         var eventType: String
+        var eventDescription: String
+
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast) {
                 eventName = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_NAME))
                 eventDate = DateUtils.stringToLocalDate(cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_DATE)))
                 eventType = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_TYPE))
+                eventDescription = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_TYPE))
 
-                events.add(EventModel(eventName, eventDate, eventType))
+                events.add(EventModel(eventName, eventDate, eventType, eventDescription))
                 cursor.moveToNext()
             }
         }

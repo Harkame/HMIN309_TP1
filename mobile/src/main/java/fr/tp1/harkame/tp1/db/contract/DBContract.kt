@@ -10,6 +10,7 @@ object DBContract {
             const val COLUMN_NAME = "event_name"
             const val COLUMN_DATE = "event_date"
             const val COLUMN_TYPE = "event_type"
+            const val COLUMN_DESCRIPTION = "event_description"
         }
     }
 }

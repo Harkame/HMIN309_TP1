@@ -64,11 +64,13 @@ class EventCreationActivity : AppCompatActivity() {
                 validEvent = false
             }
 
+            val eventDescription = findViewById<EditText>(R.id.eventCreationDescription).text.toString()
+
             if(validEvent) {
 
                 val localDate = LocalDate.parse(eventDate, DateTimeFormatter.ISO_LOCAL_DATE)
 
-                eventDBHelper.insertEvent(EventModel(eventName, localDate, eventType))
+                eventDBHelper.insertEvent(EventModel(eventName, localDate, eventType, eventDescription))
 
                 val intent = Intent(this, HomeActivity::class.java).apply {
 
