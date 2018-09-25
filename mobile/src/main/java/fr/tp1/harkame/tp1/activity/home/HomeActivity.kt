@@ -1,4 +1,4 @@
-package fr.tp1.harkame.tp1.activity
+package fr.tp1.harkame.tp1.activity.home
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,19 +8,24 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ArrayAdapter
 import android.widget.ListView
 import fr.tp1.harkame.tp1.db.helper.EventDBHelper
 import fr.tp1.harkame.tp1.DateUtils
 import fr.tp1.harkame.tp1.R
+import fr.tp1.harkame.tp1.adapter.HomeEventAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import fr.tp1.harkame.tp1.service.NotificationService
+import android.widget.AdapterView
+import fr.tp1.harkame.tp1.activity.creation.EventCreationActivity
+import fr.tp1.harkame.tp1.db.model.Item
 
 
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var eventDBHelper: EventDBHelper
+
+    private lateinit var homeEventAdapter : HomeEventAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +35,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val service_intent = Intent(this,NotificationService::class.java)
         startService(service_intent)
 
-        fab.setOnClickListener { view ->
+        fab.setOnClickListener { _ ->
             val intent = Intent(this, EventCreationActivity::class.java).apply {
 
             }
@@ -46,16 +51,19 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val events = eventDBHelper.readAllEvents()
 
-        val eventsText = ArrayList<String>()
+        val eventsText = ArrayList<Item>()
 
         for (event in events) {
-            eventsText.add(event.name + " - " + DateUtils.localDateToString(event.date) + " - " + event.type)
+            eventsText.add(Item(event.name + " - " + DateUtils.localDateToString(event.date) + " - " + event.type, true))
         }
 
+        homeEventAdapter = HomeEventAdapter(this, eventsText)
+
         val eventList = findViewById<ListView>(R.id.list_events)
-        eventList.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, eventsText)
+        eventList.adapter = homeEventAdapter
 
         nav_view.setNavigationItemSelectedListener(this)
+
     }
 
     override fun onBackPressed() {

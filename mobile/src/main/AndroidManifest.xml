@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-        android:name=".activity.HomeActivity"
+        android:name=".activity.home.HomeActivity"
         android:label="@string/app_name"
         android:theme="@style/AppTheme.NoActionBar">
         <intent-filter>
@@ -23,7 +23,7 @@
         </activity>
 
         <activity
-            android:name=".activity.EventCreationActivity"
+            android:name=".activity.creation.EventCreationActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
 

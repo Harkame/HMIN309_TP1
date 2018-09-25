@@ -1,4 +1,4 @@
-package fr.tp1.harkame.tp1.activity
+package fr.tp1.harkame.tp1.activity.creation
 
 import android.app.DatePickerDialog
 import android.content.Intent
@@ -10,10 +10,12 @@ import android.widget.Toast
 import fr.tp1.harkame.tp1.db.helper.EventDBHelper
 import fr.tp1.harkame.tp1.EventModel
 import fr.tp1.harkame.tp1.R
+import fr.tp1.harkame.tp1.activity.home.HomeActivity
 import kotlinx.android.synthetic.main.activity_event_creation.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
+import kotlin.jvm.java
 
 class EventCreationActivity : AppCompatActivity() {
 
@@ -31,7 +33,7 @@ class EventCreationActivity : AppCompatActivity() {
 
         eventCreationDateButton.setOnClickListener {
             val now = Calendar.getInstance()
-            val datePickerDialog = DatePickerDialog(this, DatePickerDialog.OnDateSetListener {view, year, month, dayOfMonth ->
+            val datePickerDialog = DatePickerDialog(this, DatePickerDialog.OnDateSetListener {_, year, month, dayOfMonth ->
                 eventCreationDateButton.text = LocalDate.of(year, month + 1, dayOfMonth).toString()
             },
                     now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH))

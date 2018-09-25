@@ -4,17 +4,13 @@ import java.util.*
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
-import android.R.string.cancel
 import android.app.*
 import android.content.Context
 import android.os.Handler
-import android.support.v4.app.NotificationCompat
-import android.view.View
-import fr.tp1.harkame.tp1.activity.HomeActivity
-import fr.tp1.harkame.tp1.db.*
 import fr.tp1.harkame.tp1.db.helper.EventDBHelper
 import android.os.Build
 import fr.tp1.harkame.tp1.R
+import fr.tp1.harkame.tp1.activity.home.HomeActivity
 
 
 /**
