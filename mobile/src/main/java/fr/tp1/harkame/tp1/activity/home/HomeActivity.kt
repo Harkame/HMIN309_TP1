@@ -51,13 +51,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val events = eventDBHelper.readAllEvents()
 
-        val eventsText = ArrayList<Item>()
-
-        for (event in events) {
-            eventsText.add(Item(event.name + " - " + DateUtils.localDateToString(event.date) + " - " + event.type, true))
-        }
-
-        homeEventAdapter = HomeEventAdapter(this, eventsText)
+        homeEventAdapter = HomeEventAdapter(this, events)
 
         val eventList = findViewById<ListView>(R.id.list_events)
         eventList.adapter = homeEventAdapter

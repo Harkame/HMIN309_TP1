@@ -72,7 +72,7 @@ class EventCreationActivity : AppCompatActivity() {
 
                 val localDate = LocalDate.parse(eventDate, DateTimeFormatter.ISO_LOCAL_DATE)
 
-                eventDBHelper.insertEvent(EventModel(eventName, localDate, eventType, eventDescription))
+                eventDBHelper.insertEvent(EventModel(eventName, localDate, eventType, eventDescription, false))
 
                 val intent = Intent(this, HomeActivity::class.java).apply {
 
