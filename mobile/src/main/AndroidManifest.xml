@@ -28,6 +28,11 @@
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
+
+        <service
+            android:name=".service.NotificationService"
+            android:exported="false"/>
+
     </application>
 
 </manifest>

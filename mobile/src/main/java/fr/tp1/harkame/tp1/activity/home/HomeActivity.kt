@@ -29,9 +29,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        val service_intent = Intent(this,NotificationService::class.java)
-        startService(service_intent)
-
         fab.setOnClickListener { _ ->
             val intent = Intent(this, EventCreationActivity::class.java).apply {
 
@@ -55,6 +52,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         nav_view.setNavigationItemSelectedListener(this)
 
+        val serviceIntent = Intent(this,NotificationService::class.java)
+        startService(serviceIntent)
     }
 
     override fun onBackPressed() {
