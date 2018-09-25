@@ -1,20 +1,15 @@
 package fr.tp1.harkame.tp1.adapter
 
-import android.widget.Toast
-import android.R.attr.checked
-import android.support.design.widget.CoordinatorLayout.Behavior.setTag
-import android.widget.TextView
-import android.widget.CheckBox
 import android.app.Activity
 import android.content.Context
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import fr.tp1.harkame.tp1.R
-import fr.tp1.harkame.tp1.activity.Item
-import fr.tp1.harkame.tp1.activity.ViewHolder
-import kotlinx.android.synthetic.main.event_row.view.*
+import fr.tp1.harkame.tp1.db.model.Item
+import fr.tp1.harkame.tp1.db.model.ViewHolder
+import android.widget.CheckBox
+import android.widget.TextView
 
 
 class HomeEventAdapter internal constructor(private val context: Context, private val list: List<Item>) : BaseAdapter() {
@@ -44,17 +39,17 @@ class HomeEventAdapter internal constructor(private val context: Context, privat
             val inflater = (context as Activity).layoutInflater
             rowView = inflater.inflate(R.layout.event_row, null)
 
-            viewHolder.checkBox = rowView!!.findViewById(R.id.rowEventCheckBox)
-            viewHolder.text = rowView.findViewById(R.id.rowEventText)
-            rowView.setTag(viewHolder)
+            viewHolder.checkBox = rowView!!.findViewById(R.id.rowEventCheckBox) as CheckBox
+            viewHolder.text = rowView.findViewById(R.id.rowEventText) as TextView
+            rowView.tag = viewHolder
         } else {
-            viewHolder = rowView.getTag() as ViewHolder
+            viewHolder = rowView.tag as ViewHolder
         }
 
         viewHolder.checkBox!!.setChecked(list[position].checked)
 
         val itemStr = list[position].text
-        viewHolder.text!!.setText(itemStr)
+        viewHolder.text!!.setText("test")
 
         viewHolder.checkBox!!.setTag(position)
 
@@ -72,11 +67,9 @@ class HomeEventAdapter internal constructor(private val context: Context, privat
             });
             */
 
-        viewHolder.checkBox!!.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(view: View) {
-                val newState = !list[position].isChecked()
-                list[position].checked = newState
-            }
+        viewHolder.checkBox!!.setOnClickListener(View.OnClickListener {
+            val newState = !list[position].isChecked()
+            list[position].checked = newState
         })
 
         viewHolder.checkBox!!.setChecked(isChecked(position))

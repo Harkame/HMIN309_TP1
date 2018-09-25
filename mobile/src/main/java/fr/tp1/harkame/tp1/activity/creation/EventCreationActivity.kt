@@ -1,4 +1,4 @@
-package fr.tp1.harkame.tp1.activity
+package fr.tp1.harkame.tp1.activity.creation
 
 import android.app.DatePickerDialog
 import android.content.Intent
@@ -10,6 +10,7 @@ import android.widget.Toast
 import fr.tp1.harkame.tp1.db.helper.EventDBHelper
 import fr.tp1.harkame.tp1.EventModel
 import fr.tp1.harkame.tp1.R
+import fr.tp1.harkame.tp1.activity.home.HomeActivity
 import kotlinx.android.synthetic.main.activity_event_creation.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
