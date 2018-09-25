@@ -15,6 +15,8 @@ import fr.tp1.harkame.tp1.DateUtils
 import fr.tp1.harkame.tp1.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import fr.tp1.harkame.tp1.service.NotificationService
+
 
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -24,6 +26,9 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        val service_intent = Intent(this,NotificationService::class.java)
+        startService(service_intent)
 
         fab.setOnClickListener { view ->
             val intent = Intent(this, EventCreationActivity::class.java).apply {
@@ -81,4 +86,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
+
+
 }

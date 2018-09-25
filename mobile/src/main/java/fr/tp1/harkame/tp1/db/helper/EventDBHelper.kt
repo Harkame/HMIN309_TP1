@@ -67,6 +67,25 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
             return ArrayList()
         }
 
+        return addEventsToList(cursor, events)
+    }
+
+    fun readAllEventsForToday(): ArrayList<EventModel> {
+        var events = ArrayList<EventModel>()
+        val db = writableDatabase
+        val dateOfTheDay = LocalDate.now()
+
+        var cursor: Cursor? = null
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + "WHERE " + DBContract.EventEntry.COLUMN_DATE + " = " + dateOfTheDay + "ORDER BY " + DBContract.EventEntry.COLUMN_DATE + " ASC", null)
+        } catch (e: SQLiteException){
+            return ArrayList()
+        }
+
+        return addEventsToList(cursor, events);
+    }
+
+    private fun addEventsToList(cursor: Cursor, events: ArrayList<EventModel>): ArrayList<EventModel> {
         var eventName: String
         var eventDate: LocalDate
         var eventType: String
