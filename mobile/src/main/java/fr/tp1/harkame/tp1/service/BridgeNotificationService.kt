@@ -30,9 +30,9 @@ class BridgeNotificationService : Service() {
     var Your_X_SECS = 10
 
     private lateinit var eventDBHelper: EventDBHelper
-    private var mNotificationManager: NotificationManagerCompat? = null
+    private var mNotificationManager: NotificationManager? = null
 
-    private val CHANNEL_ID = "eventChannel"
+    private val CHANNEL_ID = "BridgeNotificationChannel"
 
     override fun onBind(arg0: Intent): IBinder? {
         return null
@@ -49,6 +49,7 @@ class BridgeNotificationService : Service() {
 
     override fun onCreate() {
         Log.e(TAG, "onCreate")
+        mNotificationManager = createNotificationChannel()
     }
 
     override fun onDestroy() {
@@ -98,7 +99,7 @@ class BridgeNotificationService : Service() {
         }
     }
 
-    //si ça ne fonctionne pas c'est peut être qu'il faut ajouter le createChannel... 
+    //si ça ne fonctionne pas c'est peut être qu'il faut ajouter le createChannel...
     fun sendNotification() {
 
         val events = eventDBHelper.readAllEventsForToday()
@@ -120,8 +121,26 @@ class BridgeNotificationService : Service() {
 
             notificationID++
             // Gets an instance of the NotificationManager service//
-            mNotificationManager = NotificationManagerCompat.from(this)
             mNotificationManager!!.notify(notificationID, mNotification)
         }
+    }
+
+    fun createNotificationChannel(): NotificationManager? {
+        var mNotificationManager: NotificationManager? = null
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            var name = getString(R.string.channel_name)
+            var description = getString(R.string.channel_description)
+            var importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(CHANNEL_ID, name, importance)
+            channel.setDescription(description)
+
+            // Gets an instance of the NotificationManager service//
+            mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            mNotificationManager.createNotificationChannel(channel)
+
+            return mNotificationManager
+        }
+        return mNotificationManager
     }
 }

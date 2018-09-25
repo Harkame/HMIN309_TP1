@@ -27,7 +27,7 @@ class NotificationService : Service() {
     private lateinit var eventDBHelper: EventDBHelper
     private var mNotificationManager: NotificationManager? = null
 
-    private val CHANNEL_ID = "eventChannel"
+    private val CHANNEL_ID = "NotificationChannel"
 
     override fun onBind(arg0: Intent): IBinder? {
         return null
