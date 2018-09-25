@@ -1,9 +1,8 @@
 package fr.tp1.harkame.tp1.db.model
 
-import android.widget.CheckBox
-import android.widget.TextView
+import fr.tp1.harkame.tp1.EventModel
 
-class Item(internal var text: String, internal var checked: Boolean) {
+class Item(internal var event: EventModel, internal var checked: Boolean) {
 
     fun isChecked(): Boolean {
         return checked

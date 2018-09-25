@@ -10,9 +10,10 @@ import fr.tp1.harkame.tp1.db.model.Item
 import fr.tp1.harkame.tp1.db.model.ViewHolder
 import android.widget.CheckBox
 import android.widget.TextView
+import fr.tp1.harkame.tp1.EventModel
 
 
-class HomeEventAdapter internal constructor(private val context: Context, private val list: List<Item>) : BaseAdapter() {
+class HomeEventAdapter internal constructor(private val context: Context, private val list: List<EventModel>) : BaseAdapter() {
 
     override fun getCount(): Int {
         return list.size
@@ -27,11 +28,11 @@ class HomeEventAdapter internal constructor(private val context: Context, privat
     }
 
     fun isChecked(position: Int): Boolean {
-        return list[position].checked
+        return list[position].notification
     }
 
-    override fun getView(position: Int, convertView: View, parent: ViewGroup): View {
-        var rowView: View? = convertView
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        var rowView = convertView
 
         // reuse views
         var viewHolder = ViewHolder()
@@ -39,17 +40,17 @@ class HomeEventAdapter internal constructor(private val context: Context, privat
             val inflater = (context as Activity).layoutInflater
             rowView = inflater.inflate(R.layout.event_row, null)
 
-            viewHolder.checkBox = rowView!!.findViewById(R.id.rowEventCheckBox) as CheckBox
+            viewHolder.checkBox = rowView.findViewById(R.id.rowEventCheckBox) as CheckBox
             viewHolder.text = rowView.findViewById(R.id.rowEventText) as TextView
             rowView.tag = viewHolder
         } else {
             viewHolder = rowView.tag as ViewHolder
         }
 
-        viewHolder.checkBox!!.setChecked(list[position].checked)
+        viewHolder.checkBox!!.setChecked(!list[position].notification)
 
-        val itemStr = list[position].text
-        viewHolder.text!!.setText("test")
+        val event = list[position]
+        viewHolder.text!!.setText(event.toString())
 
         viewHolder.checkBox!!.setTag(position)
 
@@ -68,12 +69,14 @@ class HomeEventAdapter internal constructor(private val context: Context, privat
             */
 
         viewHolder.checkBox!!.setOnClickListener(View.OnClickListener {
-            val newState = !list[position].isChecked()
-            list[position].checked = newState
+            val newState = !list[position].notification//.isChecked()
+            list[position].notification = newState
+
+            var event = list[position]
         })
 
         viewHolder.checkBox!!.setChecked(isChecked(position))
 
-        return rowView
+        return rowView!!
     }
 }

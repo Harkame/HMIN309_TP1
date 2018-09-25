@@ -35,6 +35,7 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         values.put(DBContract.EventEntry.COLUMN_DATE, DateUtils.localDateToString(event.date))
         values.put(DBContract.EventEntry.COLUMN_TYPE, event.type)
         values.put(DBContract.EventEntry.COLUMN_DESCRIPTION, event.description)
+        values.put(DBContract.EventEntry.COLUMN_NOTIFICATION, event.notification)
 
         db.insert(DBContract.EventEntry.TABLE_NAME, null, values)
 
@@ -51,7 +52,8 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
                         DBContract.EventEntry.COLUMN_NAME + " TEXT," +
                         DBContract.EventEntry.COLUMN_DATE + " DATE," +
                         DBContract.EventEntry.COLUMN_TYPE + " TEXT," +
-                        DBContract.EventEntry.COLUMN_DESCRIPTION + " TEXT)"
+                        DBContract.EventEntry.COLUMN_DESCRIPTION + " TEXT," +
+                        DBContract.EventEntry.COLUMN_NOTIFICATION + " INTEGER)"
 
         private const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + DBContract.EventEntry.TABLE_NAME
     }
@@ -73,16 +75,17 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
     fun readAllEventsForToday(): ArrayList<EventModel> {
         var events = ArrayList<EventModel>()
         val db = writableDatabase
+
         val dateOfTheDay = LocalDate.now()
 
         var cursor: Cursor? = null
         try {
             cursor = db.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + "WHERE " + DBContract.EventEntry.COLUMN_DATE + " = " + dateOfTheDay + "ORDER BY " + DBContract.EventEntry.COLUMN_DATE + " ASC", null)
-        } catch (e: SQLiteException){
+        } catch (e: SQLiteException) {
             return ArrayList()
         }
 
-        return addEventsToList(cursor, events);
+        return addEventsToList(cursor, events)
     }
 
     private fun addEventsToList(cursor: Cursor, events: ArrayList<EventModel>): ArrayList<EventModel> {
@@ -90,15 +93,18 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         var eventDate: LocalDate
         var eventType: String
         var eventDescription: String
+        var eventNotification: Boolean
 
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast) {
                 eventName = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_NAME))
                 eventDate = DateUtils.stringToLocalDate(cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_DATE)))
                 eventType = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_TYPE))
-                eventDescription = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_TYPE))
+                eventDescription = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_DESCRIPTION))
 
-                events.add(EventModel(eventName, eventDate, eventType, eventDescription))
+                eventNotification = cursor.getInt(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_NOTIFICATION)) == 0
+
+                events.add(EventModel(eventName, eventDate, eventType, eventDescription, eventNotification))
                 cursor.moveToNext()
             }
         }
