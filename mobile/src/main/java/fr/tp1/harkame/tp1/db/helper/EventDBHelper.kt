@@ -14,34 +14,6 @@ import java.time.LocalDate
 
 
 class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
-    override fun onCreate(db: SQLiteDatabase) {
-        db.execSQL(SQL_CREATE_ENTRIES)
-    }
-
-    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        onCreate(db)
-    }
-
-    override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        onUpgrade(db, oldVersion, newVersion)
-    }
-
-    @Throws(SQLiteConstraintException::class)
-    fun insertEvent(event: EventModel): Boolean {
-        val db = writableDatabase
-
-        val values = ContentValues()
-        values.put(DBContract.EventEntry.COLUMN_NAME, event.name)
-        values.put(DBContract.EventEntry.COLUMN_DATE, DateUtils.localDateToString(event.date))
-        values.put(DBContract.EventEntry.COLUMN_TYPE, event.type)
-        values.put(DBContract.EventEntry.COLUMN_DESCRIPTION, event.description)
-        values.put(DBContract.EventEntry.COLUMN_NOTIFICATION, event.notification)
-
-        db.insert(DBContract.EventEntry.TABLE_NAME, null, values)
-
-        return true
-    }
-
     companion object {
         private const val DATABASE_VERSION = 1
         private const val DATABASE_NAME = "FeedReader.db"
@@ -58,42 +30,69 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         private const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + DBContract.EventEntry.TABLE_NAME
     }
 
-    fun readAllEvents(): ArrayList<EventModel> {
-        val events = ArrayList<EventModel>()
-        val db = writableDatabase
+    override fun onCreate(datebase: SQLiteDatabase) {
+        datebase.execSQL(SQL_CREATE_ENTRIES)
+    }
 
-        var cursor: Cursor? = null
+    override fun onUpgrade(datebase: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        onCreate(datebase)
+    }
+
+    override fun onDowngrade(datebase: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        onUpgrade(datebase, oldVersion, newVersion)
+    }
+
+    @Throws(SQLiteConstraintException::class)
+    fun insertEvent(event: EventModel): Boolean {
+        val datebase = writableDatabase
+
+        val values = ContentValues()
+        values.put(DBContract.EventEntry.COLUMN_NAME, event.name)
+        values.put(DBContract.EventEntry.COLUMN_DATE, DateUtils.localDateToString(event.date))
+        values.put(DBContract.EventEntry.COLUMN_TYPE, event.type)
+        values.put(DBContract.EventEntry.COLUMN_DESCRIPTION, event.description)
+        values.put(DBContract.EventEntry.COLUMN_NOTIFICATION, event.notification)
+
+        datebase.insert(DBContract.EventEntry.TABLE_NAME, null, values)
+
+        return true
+    }
+
+    fun readAllEvents(): ArrayList<EventModel> {
+        val datebase = writableDatabase
+
+        var cursor: Cursor?
         try {
-            cursor = db.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " ORDER BY " + DBContract.EventEntry.COLUMN_DATE + " ASC ", null)
+            cursor = datebase.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " ORDER BY " + DBContract.EventEntry.COLUMN_DATE + " ASC ", null)
         } catch (e: SQLiteException) {
             return ArrayList()
         }
 
-        return addEventsToList(cursor, events)
+        return cursorToList(cursor)
     }
 
     fun readAllEventsForToday(): ArrayList<EventModel> {
-        var events = ArrayList<EventModel>()
-        val db = writableDatabase
+        val datebase = writableDatabase
 
         val dateOfTheDay = LocalDate.now()
 
-        var cursor: Cursor? = null
+        var cursor: Cursor?
         try {
-            cursor = db.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + "WHERE " + DBContract.EventEntry.COLUMN_DATE + " = " + dateOfTheDay + "ORDER BY " + DBContract.EventEntry.COLUMN_DATE + " ASC", null)
+            cursor = datebase.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " WHERE " + DBContract.EventEntry.COLUMN_DATE + " = " + dateOfTheDay + " ORDER BY " + DBContract.EventEntry.COLUMN_DATE + " ASC", null)
         } catch (e: SQLiteException) {
             return ArrayList()
         }
 
-        return addEventsToList(cursor, events)
+        return cursorToList(cursor)
     }
 
-    private fun addEventsToList(cursor: Cursor, events: ArrayList<EventModel>): ArrayList<EventModel> {
+    private fun cursorToList(cursor: Cursor) : ArrayList<EventModel>{
         var eventName: String
         var eventDate: LocalDate
         var eventType: String
         var eventDescription: String
         var eventNotification: Boolean
+        val events = ArrayList<EventModel>()
 
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast) {
