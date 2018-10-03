@@ -7,15 +7,20 @@ import android.support.v7.app.AppCompatActivity
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import fr.tp1.harkame.tp1.DateUtils
 import fr.tp1.harkame.tp1.db.helper.EventDBHelper
 import fr.tp1.harkame.tp1.EventModel
 import fr.tp1.harkame.tp1.R
 import fr.tp1.harkame.tp1.activity.home.HomeActivity
 import kotlinx.android.synthetic.main.activity_event_creation.*
+import org.joda.time.DateTime
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.jvm.java
+import org.joda.time.format.DateTimeFormat
+
+
 
 class EventCreationActivity : AppCompatActivity() {
 
@@ -29,12 +34,12 @@ class EventCreationActivity : AppCompatActivity() {
 
         val eventCreationDateButton = findViewById<Button>(R.id.eventCreationDate);
 
-        eventCreationDateButton.text =  LocalDate.parse(LocalDate.now().toString(), DateTimeFormatter.ISO_LOCAL_DATE).toString()
+        eventCreationDateButton.text = DateUtils.dateTimeToString(DateTime.now())
 
         eventCreationDateButton.setOnClickListener {
             val now = Calendar.getInstance()
             val datePickerDialog = DatePickerDialog(this, DatePickerDialog.OnDateSetListener {_, year, month, dayOfMonth ->
-                eventCreationDateButton.text = LocalDate.of(year, month + 1, dayOfMonth).toString()
+                eventCreationDateButton.text = "$dayOfMonth/$month/$year"
             },
                     now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH))
 
@@ -70,9 +75,10 @@ class EventCreationActivity : AppCompatActivity() {
 
             if(validEvent) {
 
-                val localDate = LocalDate.parse(eventDate, DateTimeFormatter.ISO_LOCAL_DATE)
+                val formatter = DateTimeFormat.forPattern("dd/MM/yyyy")
+                val dateTime = formatter.parseDateTime(eventDate)
 
-                eventDBHelper.insertEvent(EventModel(eventName, localDate, eventType, eventDescription, false))
+                eventDBHelper.insertEvent(EventModel(eventName, dateTime, eventType, eventDescription, false))
 
                 val intent = Intent(this, HomeActivity::class.java).apply {
 

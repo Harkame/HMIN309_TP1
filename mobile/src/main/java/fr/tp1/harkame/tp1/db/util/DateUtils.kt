@@ -1,24 +1,22 @@
 package fr.tp1.harkame.tp1
 
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import java.text.SimpleDateFormat
+import java.util.*
+import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
+
+
 
 object DateUtils {
 
-    private const val DATE_FORMAT = "yyyy-MM-dd"
-
     @JvmStatic
-    fun localDateToString(localDateTime: LocalDate): String {
-        val formatter = DateTimeFormatter.ofPattern(DATE_FORMAT)
-
-        return localDateTime.format(formatter)
+    fun dateTimeToString(dateTime: DateTime): String{
+         return DateTimeFormat.forPattern("dd/MM/yyyy").print(dateTime)
     }
 
     @JvmStatic
-    fun stringToLocalDate(eventDate: String): LocalDate {
-        val formatter = DateTimeFormatter.ofPattern(DATE_FORMAT)
-
-        return LocalDate.parse(eventDate, formatter)
+    fun stringToDateTime(eventDate: String): DateTime {
+        val formatter = DateTimeFormat.forPattern("dd/MM/yyyy")
+        return formatter.parseDateTime(eventDate)
     }
 }
