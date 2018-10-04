@@ -49,7 +49,10 @@ class BridgeNotificationService : Service() {
 
     override fun onCreate() {
         Log.e(TAG, "onCreate")
+
         mNotificationManager = createNotificationChannel()
+
+        eventDBHelper = EventDBHelper(this)
     }
 
     override fun onDestroy() {
