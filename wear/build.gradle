@@ -8,7 +8,8 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "fr.tp1.harkame.tp1"
-        minSdkVersion 26
+        minSdkVersion 23
+        //noinspection ExpiringTargetSdkVersion
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -25,7 +26,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.google.android.support:wearable:2.3.0'
-    implementation 'com.google.android.gms:play-services-wearable:15.0.1'
+    implementation 'com.google.android.gms:play-services-wearable:16.0.1'
     implementation 'com.android.support:percent:27.1.1'
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
