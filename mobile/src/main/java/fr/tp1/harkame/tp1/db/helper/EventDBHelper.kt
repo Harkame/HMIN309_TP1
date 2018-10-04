@@ -72,6 +72,12 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         return cursorToList(cursor)
     }
 
+    fun updateNotification(eventId: Int, notification: Int){
+        val database = writableDatabase
+
+        database.execSQL("UPDATE " + DBContract.EventEntry.TABLE_NAME + " SET " + DBContract.EventEntry.COLUMN_NOTIFICATION + " = " + notification + "WHERE " + DBContract.EventEntry.COLUMN_EVENT_ID + " = " + eventId)
+    }
+
     fun readAllEventsForToday(): ArrayList<EventModel> {
         val database = writableDatabase
 

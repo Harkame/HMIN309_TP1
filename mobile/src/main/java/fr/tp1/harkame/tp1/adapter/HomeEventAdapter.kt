@@ -72,6 +72,8 @@ class HomeEventAdapter internal constructor(private val context: Context, privat
             list[position].notification = newState
 
             var event = list[position]
+
+
         })
 
         viewHolder.checkBox!!.setChecked(isChecked(position))
