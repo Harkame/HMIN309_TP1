@@ -94,10 +94,9 @@ class BridgeNotificationService : Service() {
             override fun run() {
 
                 //use a handler to run a toast that shows the current timestamp
-                handler.post(Runnable {
-                    //TODO CALL NOTIFICATION FUNC
+                handler.post {
                     sendNotification()
-                })
+                }
             }
         }
     }
@@ -120,6 +119,10 @@ class BridgeNotificationService : Service() {
                     .setContentTitle("Evenement Aujourd'hui : " + event.name)
                     .setContentText(event.description)
                     .setChannelId(CHANNEL_ID)
+                    .extend(
+                            NotificationCompat.WearableExtender()
+                                    .setDismissalId("abc123")
+                    )
                     .build()
 
             notificationID++

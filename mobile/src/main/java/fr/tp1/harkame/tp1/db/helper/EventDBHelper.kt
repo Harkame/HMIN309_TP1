@@ -22,11 +22,11 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         private const val SQL_CREATE_ENTRIES =
                 "CREATE TABLE " + DBContract.EventEntry.TABLE_NAME + " (" +
                         DBContract.EventEntry.COLUMN_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        DBContract.EventEntry.COLUMN_NAME + " TEXT," +
-                        DBContract.EventEntry.COLUMN_DATE + " TEXT," +
-                        DBContract.EventEntry.COLUMN_TYPE + " TEXT," +
-                        DBContract.EventEntry.COLUMN_DESCRIPTION + " TEXT," +
-                        DBContract.EventEntry.COLUMN_NOTIFICATION + " INTEGER)"
+                        DBContract.EventEntry.COLUMN_EVENT_NAME + " TEXT," +
+                        DBContract.EventEntry.COLUMN_EVENT_DATE + " TEXT," +
+                        DBContract.EventEntry.COLUMN_EVENT_TYPE + " TEXT," +
+                        DBContract.EventEntry.COLUMN_EVENT_DESCRIPTION + " TEXT," +
+                        DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION + " INTEGER)"
 
         private const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + DBContract.EventEntry.TABLE_NAME
     }
@@ -48,11 +48,11 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         val database = writableDatabase
 
         val values = ContentValues()
-        values.put(DBContract.EventEntry.COLUMN_NAME, event.name)
-        values.put(DBContract.EventEntry.COLUMN_DATE, DateUtils.dateTimeToString(event.date))
-        values.put(DBContract.EventEntry.COLUMN_TYPE, event.type)
-        values.put(DBContract.EventEntry.COLUMN_DESCRIPTION, event.description)
-        values.put(DBContract.EventEntry.COLUMN_NOTIFICATION, event.notification)
+        values.put(DBContract.EventEntry.COLUMN_EVENT_NAME, event.name)
+        values.put(DBContract.EventEntry.COLUMN_EVENT_DATE, DateUtils.dateTimeToString(event.date))
+        values.put(DBContract.EventEntry.COLUMN_EVENT_TYPE, event.type)
+        values.put(DBContract.EventEntry.COLUMN_EVENT_DESCRIPTION, event.description)
+        values.put(DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION, event.notification)
 
         database.insert(DBContract.EventEntry.TABLE_NAME, null, values)
 
@@ -64,7 +64,7 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
 
         var cursor: Cursor?
         try {
-            cursor = database.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " ORDER BY " + DBContract.EventEntry.COLUMN_DATE + " ASC ", null)
+            cursor = database.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " ORDER BY " + DBContract.EventEntry.COLUMN_EVENT_DATE + " ASC ", null)
         } catch (e: SQLiteException) {
             return ArrayList()
         }
@@ -75,7 +75,7 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
     fun updateNotification(eventId: Int, notification: Int){
         val database = writableDatabase
 
-        database.execSQL("UPDATE " + DBContract.EventEntry.TABLE_NAME + " SET " + DBContract.EventEntry.COLUMN_NOTIFICATION + " = " + notification + "WHERE " + DBContract.EventEntry.COLUMN_EVENT_ID + " = " + eventId)
+        database.execSQL("UPDATE " + DBContract.EventEntry.TABLE_NAME + " SET " + DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION + " = " + notification + " WHERE " + DBContract.EventEntry.COLUMN_EVENT_ID + " = " + eventId)
     }
 
     fun readAllEventsForToday(): ArrayList<EventModel> {
@@ -95,6 +95,7 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
     }
 
     private fun cursorToList(cursor: Cursor) : ArrayList<EventModel>{
+        var eventId: Int
         var eventName: String
         var eventDate: DateTime
         var eventType: String
@@ -104,14 +105,15 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
 
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast) {
-                eventName = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_NAME))
-                eventDate = DateUtils.stringToDateTime(cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_DATE)))
-                eventType = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_TYPE))
-                eventDescription = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_DESCRIPTION))
+                eventId = cursor.getInt(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_ID))
+                eventName = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_NAME))
+                eventDate = DateUtils.stringToDateTime(cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_DATE)))
+                eventType = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_TYPE))
+                eventDescription = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_DESCRIPTION))
 
-                eventNotification = cursor.getInt(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_NOTIFICATION)) == 0
+                eventNotification = cursor.getInt(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION)) == 1
 
-                events.add(EventModel(eventName, eventDate, eventType, eventDescription, eventNotification))
+                events.add(EventModel(eventId, eventName, eventDate, eventType, eventDescription, eventNotification))
                 cursor.moveToNext()
             }
         }

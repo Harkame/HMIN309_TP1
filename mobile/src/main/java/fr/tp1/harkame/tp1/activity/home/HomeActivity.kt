@@ -53,9 +53,9 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         nav_view.setNavigationItemSelectedListener(this)
 
-        startService(Intent(this,NotificationService::class.java))
+        //startService(Intent(this,NotificationService::class.java))
 
-        startService(Intent(this,BridgeNotificationService::class.java))
+        //startService(Intent(this,BridgeNotificationService::class.java))
     }
 
     override fun onBackPressed() {
