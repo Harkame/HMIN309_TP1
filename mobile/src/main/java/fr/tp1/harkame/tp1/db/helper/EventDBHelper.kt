@@ -86,7 +86,7 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         var cursor: Cursor?
 
         try {
-            cursor = database.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " WHERE event_date = '" + DateUtils.dateTimeToString(dateOfTheDay) + "' ORDER BY event_date ASC", null)
+            cursor = database.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " WHERE event_date = '" + DateUtils.dateTimeToString(dateOfTheDay) + "' AND " + DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION + " = 1 "+ " ORDER BY event_date ASC", null)
         } catch (e: SQLiteException) {
             return ArrayList()
         }
