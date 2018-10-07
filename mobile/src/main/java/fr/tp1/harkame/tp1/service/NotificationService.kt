@@ -18,11 +18,11 @@ import fr.tp1.harkame.tp1.activity.home.HomeActivity
  */
 
 class NotificationService : Service() {
+    private val DEFAULT_TIME_START_NOTIFICATION = 10
 
     var timer: Timer? = null
     var timerTask: TimerTask? = null
     var TAG = "Timers"
-    var Your_X_SECS = 10
 
     private lateinit var eventDBHelper: EventDBHelper
     private var mNotificationManager: NotificationManager? = null
@@ -70,7 +70,7 @@ class NotificationService : Service() {
         timer!!.schedule(
                 timerTask,
                 10000,
-                Your_X_SECS.toLong() * 30000
+                DEFAULT_TIME_START_NOTIFICATION.toLong() * 30000
         ) //
         //timer.schedule(timerTask, 5000,1000); //
     }

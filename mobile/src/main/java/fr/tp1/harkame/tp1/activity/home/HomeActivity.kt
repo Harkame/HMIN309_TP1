@@ -14,9 +14,8 @@ import fr.tp1.harkame.tp1.R
 import fr.tp1.harkame.tp1.adapter.HomeEventAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import fr.tp1.harkame.tp1.service.NotificationService
 import fr.tp1.harkame.tp1.activity.creation.EventCreationActivity
-import fr.tp1.harkame.tp1.service.BridgeNotificationService
+import fr.tp1.harkame.tp1.service.NotificationService
 
 
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -53,9 +52,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         nav_view.setNavigationItemSelectedListener(this)
 
-        //startService(Intent(this,NotificationService::class.java))
-
-        //startService(Intent(this,BridgeNotificationService::class.java))
+        startService(Intent(this, NotificationService::class.java))
     }
 
     override fun onBackPressed() {

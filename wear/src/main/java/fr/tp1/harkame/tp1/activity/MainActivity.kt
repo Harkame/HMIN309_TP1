@@ -1,7 +1,8 @@
-package fr.tp1.harkame.tp1
+package fr.tp1.harkame.tp1.activity
 
 import android.os.Bundle
 import android.support.wearable.activity.WearableActivity
+import fr.tp1.harkame.tp1.R
 
 class MainActivity : WearableActivity() {
 
