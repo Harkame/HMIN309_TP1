@@ -15,13 +15,7 @@
   ~ limitations under the License.
   -->
 <resources>
-    <dimen name="activity_main_text_header_spacing">5dp</dimen>
-
-    <dimen name="recycler_row_padding">5dp</dimen>
-    <dimen name="recycler_row_text_size">10sp</dimen>
-
-    <dimen name="activity_notification_details_top_padding">5dp</dimen>
-    <dimen name="activity_notification_details_bottom_padding">5dp</dimen>
-    <dimen name="activity_notification_details_right_padding">5dp</dimen>
-    <dimen name="activity_notification_details_left_padding">5dp</dimen>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
 </resources>
