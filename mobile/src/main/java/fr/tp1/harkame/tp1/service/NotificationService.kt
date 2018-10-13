@@ -11,6 +11,7 @@ import fr.tp1.harkame.tp1.db.helper.EventDBHelper
 import android.os.Build
 import fr.tp1.harkame.tp1.R
 import fr.tp1.harkame.tp1.activity.home.HomeActivity
+import android.app.PendingIntent
 
 
 /**
@@ -27,7 +28,7 @@ class NotificationService : Service() {
     private lateinit var eventDBHelper: EventDBHelper
     private var mNotificationManager: NotificationManager? = null
 
-    private val CHANNEL_ID = "NotificationChannel"
+    private val CHANNEL_ID = "eventChannel"
 
     override fun onBind(arg0: Intent): IBinder? {
         return null
@@ -107,6 +108,16 @@ class NotificationService : Service() {
 
         for (event in events) {
 
+            val snoozeIntent = Intent(this, NotificationService::class.java)
+            snoozeIntent.action = "com.android.wearable.wear.wearnotifications.handlers.action.SNOOZE"
+
+            val snoozePendingIntent = PendingIntent.getService(this, 0, snoozeIntent, 0)
+            val snoozeAction = android.app.Notification.Action.Builder(
+                    R.drawable.ic_launcher_background,
+                    "Snooze",
+                    snoozePendingIntent)
+                    .build()
+
             // Build the shape of the notification
             val mNotification = Notification.Builder(this,CHANNEL_ID)
                     .setContentIntent(pendingIntent)
@@ -114,6 +125,7 @@ class NotificationService : Service() {
                     .setContentTitle("Evenement Aujourd'hui : " + event.name)
                     .setContentText(event.description)
                     .setChannelId(CHANNEL_ID)
+                    .setActions(snoozeAction)
                     .build()
 
             notificationID++

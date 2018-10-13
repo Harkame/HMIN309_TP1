@@ -31,7 +31,7 @@ class BigTextIntentService : IntentService("BigTextIntentService") {
         Log.d(TAG, "handleActionDismiss()")
 
         val notificationManagerCompat = NotificationManagerCompat.from(applicationContext)
-        //notificationManagerCompat.cancel(MainActivity.NOTIFICATION_ID)
+        notificationManagerCompat.cancel(MainActivity.NOTIFICATION_ID)
     }
 
     private fun handleActionSnooze() {
@@ -51,7 +51,7 @@ class BigTextIntentService : IntentService("BigTextIntentService") {
         if (notification != null) {
             val notificationManagerCompat = NotificationManagerCompat.from(applicationContext)
 
-            //notificationManagerCompat.cancel(MainActivity.NOTIFICATION_ID)
+            notificationManagerCompat.cancel(MainActivity.NOTIFICATION_ID)
 
             try {
                 Thread.sleep(SNOOZE_TIME)
@@ -59,13 +59,13 @@ class BigTextIntentService : IntentService("BigTextIntentService") {
                 Thread.currentThread().interrupt()
             }
 
-            //notificationManagerCompat.notify(MainActivity.NOTIFICATION_ID, notification!!)
+            notificationManagerCompat.notify(MainActivity.NOTIFICATION_ID, notification)
         }
 
     }
 
     private fun recreateBuilderWithBigTextStyle(): NotificationCompat.Builder {
-        val notificationChannelId = "channel_social_1"
+        val notificationChannelId = "eventChannel"
 
         val bigTextStyle = NotificationCompat.BigTextStyle()
                 .bigText("Text")
@@ -91,7 +91,6 @@ class BigTextIntentService : IntentService("BigTextIntentService") {
                 snoozePendingIntent)
                 .build()
 
-        // Dismiss Action
         val dismissIntent = Intent(this, BigTextIntentService::class.java)
         dismissIntent.action = ACTION_DISMISS
 
@@ -108,7 +107,6 @@ class BigTextIntentService : IntentService("BigTextIntentService") {
         GlobalNotificationBuilder.notificationCompatBuilderInstance = notificationCompatBuilder
 
         notificationCompatBuilder
-                .setStyle(bigTextStyle)
                 .setContentTitle("Title")
                 .setContentText("Text")
                 .setSmallIcon(R.mipmap.ic_launcher)

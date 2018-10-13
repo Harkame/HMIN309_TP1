@@ -22,5 +22,5 @@
         android:paddingTop="@dimen/activity_main_text_header_spacing"
         android:paddingBottom="@dimen/activity_main_text_header_spacing"
         android:background="@color/grey"
-        android:text="@string/floating_text"/>
+        android:text="text"/>
 </FrameLayout>

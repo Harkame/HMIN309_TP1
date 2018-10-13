@@ -13,7 +13,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.wear.ambient.AmbientMode
-import android.support.wear.widget.WearableLinearLayoutManager
 import android.util.Log
 import android.widget.FrameLayout
 import fr.tp1.harkame.tp1.R
@@ -24,7 +23,7 @@ class MainActivity : Activity(), AmbientMode.AmbientCallbackProvider {
     private var mNotificationManagerCompat: NotificationManagerCompat? = null
 
     private var mMainFrameLayout: FrameLayout? = null
-    private var mWearableRecyclerView: RecyclerView? = null
+    private var mRecyclerView: RecyclerView? = null
     private var mCustomRecyclerAdapter: CustomRecyclerAdapter? = null
 
     private var mAmbientController: AmbientMode.AmbientController? = null
@@ -41,19 +40,19 @@ class MainActivity : Activity(), AmbientMode.AmbientCallbackProvider {
         mNotificationManagerCompat = NotificationManagerCompat.from(applicationContext)
 
         mMainFrameLayout = findViewById(R.id.mainFrameLayout)
-        mWearableRecyclerView = findViewById(R.id.recycler_view)
+        mRecyclerView = findViewById(R.id.recycler_view)
 
         // Aligns the first and last items on the list vertically centered on the screen.
-        //mWearableRecyclerView!!.setEdgeItemsCenteringEnabled(true)
+        //mRecyclerView!!.setEdgeItemsCenteringEnabled(true)
 
         // Customizes scrolling so items farther away form center are smaller.
         val scalingScrollLayoutCallback = ScalingScrollLayoutCallback()
-        mWearableRecyclerView!!.setLayoutManager(
+        mRecyclerView!!.setLayoutManager(
                 LinearLayoutManager(this))
 
         // Improves performance because we know changes in content do not change the layout size of
         // the RecyclerView.
-        mWearableRecyclerView!!.setHasFixedSize(true)
+        mRecyclerView!!.setHasFixedSize(true)
 
         // Specifies an adapter (see also next example).
         mCustomRecyclerAdapter = CustomRecyclerAdapter(
@@ -62,10 +61,10 @@ class MainActivity : Activity(), AmbientMode.AmbientCallbackProvider {
                 // updates in the UI/Notifications.
                 Controller(this))
 
-        mWearableRecyclerView!!.setAdapter(mCustomRecyclerAdapter)
+        mRecyclerView!!.setAdapter(mCustomRecyclerAdapter)
     }
 
-    // Called by WearableRecyclerView when an item is selected (check onCreate() for
+    // Called by RecyclerView when an item is selected (check onCreate() for
     // initialization).
     fun itemSelected(data: String) {
 
@@ -101,7 +100,7 @@ class MainActivity : Activity(), AmbientMode.AmbientCallbackProvider {
 
         Log.d(TAG, "generateBigTextStyleNotification()")
 
-        val notificationChannelId = "channel_social_1"
+        val notificationChannelId = "eventChannel"
 
         val bigTextStyle = NotificationCompat.BigTextStyle()
                 // Overrides ContentText in the big form of the template.
@@ -244,7 +243,7 @@ class MainActivity : Activity(), AmbientMode.AmbientCallbackProvider {
         private val INBOX_STYLE = "INBOX_STYLE"
         private val MESSAGING_STYLE = "MESSAGING_STYLE"
 
-        private val NOTIFICATION_STYLES = arrayOf(BIG_TEXT_STYLE, BIG_PICTURE_STYLE, INBOX_STYLE, MESSAGING_STYLE)
+        private val NOTIFICATION_STYLES = arrayOf(BIG_TEXT_STYLE)
     }
 
 }
