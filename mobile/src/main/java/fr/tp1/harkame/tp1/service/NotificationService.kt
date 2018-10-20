@@ -15,9 +15,9 @@ import android.support.v4.app.NotificationManagerCompat
 import fr.tp1.harkame.tp1.EventModel
 
 class NotificationService : Service() {
-    val ACTION_DISMISS = "fr.tp1.harkame.tp1.service.NotificationIntentService.DISMISS"
-    val ACTION_REPORT_5_MINUTES = "fr.tp1.harkame.tp1.service.NotificationIntentService.5Minutes"
-    val ACTION_REPORT_1_HOUR = "fr.tp1.harkame.tp1.service.NotificationIntentService.1Hour"
+    val ACTION_DISMISS = "fr.tp1.harkame.tp1.service.NotificationIntentService.Dismiss"
+    val ACTION_REPORT_SHORT = "fr.tp1.harkame.tp1.service.NotificationIntentService.ActionReportShort"
+    val ACTION_REPORT_LONG = "fr.tp1.harkame.tp1.service.NotificationIntentService.ActionReportLong"
 
     private val DEFAULT_TIME_START_NOTIFICATION = 5
 
@@ -110,7 +110,9 @@ class NotificationService : Service() {
     fun createNotification(event: EventModel) : Notification
     {
         var intent = Intent(this, HomeActivity::class.java)
+
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+
 
         val dismissIntent = Intent(this, NotificationIntentService::class.java)
         dismissIntent.action = ACTION_DISMISS
@@ -124,23 +126,28 @@ class NotificationService : Service() {
 
 
         val reportShortIntent = Intent(this, NotificationIntentService::class.java)
-        reportShortIntent.action = ACTION_REPORT_5_MINUTES
+        reportShortIntent.action = ACTION_REPORT_SHORT
+
+        reportShortIntent.putExtra("event", event)
 
         val reportShortPendingIntent = PendingIntent.getService(this, 0, reportShortIntent, 0)
+
         val reportShortAction = android.support.v4.app.NotificationCompat.Action.Builder(
                 R.drawable.ic_alarm,
-                "Report 5 minutes",
+                "Report : 5 minutes",
                 reportShortPendingIntent)
                 .build()
 
         val reportLongIntent = Intent(this, NotificationIntentService::class.java)
-        reportLongIntent.action = ACTION_REPORT_1_HOUR
+        reportLongIntent.action = ACTION_REPORT_LONG
 
-        val snoozePendingIntent = PendingIntent.getService(this, 0, reportLongIntent, 0)
+        reportLongIntent.putExtra("event", event)
+
+        val reportLongPendingIntentService = PendingIntent.getService(this, 0, reportLongIntent, 0)
         val reportlongAction = android.support.v4.app.NotificationCompat.Action.Builder(
                 R.drawable.ic_alarm,
-                "Report 1 heure",
-                snoozePendingIntent)
+                "Report : 1 heure",
+                reportLongPendingIntentService)
                 .build()
 
         val notificationCompatBuilder = NotificationCompat.Builder(applicationContext)

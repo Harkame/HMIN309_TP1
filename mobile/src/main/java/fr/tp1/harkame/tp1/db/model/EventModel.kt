@@ -1,8 +1,9 @@
 package fr.tp1.harkame.tp1
 
 import org.joda.time.DateTime
+import java.io.Serializable
 
-class EventModel
+class EventModel : Serializable
 {
     var id: Int = 0
     var name: String = ""

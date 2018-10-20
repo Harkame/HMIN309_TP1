@@ -4,14 +4,18 @@ import android.content.Intent
 import android.util.Log
 import android.app.*
 import android.support.v4.app.NotificationManagerCompat
+import fr.tp1.harkame.tp1.EventModel
 
 class NotificationIntentService : IntentService("NotificationIntentService") {
     private val CHANNEL_ID = "eventChannel"
     var TAG = "Timers"
 
-    val ACTION_DISMISS = "fr.tp1.harkame.tp1.service.NotificationIntentService.DISMISS"
-    val ACTION_REPORT_SHORT = "fr.tp1.harkame.tp1.service.NotificationIntentService.5Minutes"
-    val ACTION_REPORT_LONG = "fr.tp1.harkame.tp1.service.NotificationIntentService.1Hour"
+    val ACTION_DISMISS = "fr.tp1.harkame.tp1.service.NotificationIntentService.Dismiss"
+    val ACTION_REPORT_SHORT = "fr.tp1.harkame.tp1.service.NotificationIntentService.ActionReportShort"
+    val ACTION_REPORT_LONG = "fr.tp1.harkame.tp1.service.NotificationIntentService.ActionReportLong"
+
+    val REPORT_TIME_SHORT = 300000L
+    val REPORT_TIME_LONG = 3600000L
 
     val NOTIFICATION_ID = 888
 
@@ -21,14 +25,16 @@ class NotificationIntentService : IntentService("NotificationIntentService") {
     override fun onHandleIntent(intent: Intent?) {
         Log.d(TAG, "onHandleIntent(): " + intent!!)
 
+        var event = intent.getSerializableExtra("event") as EventModel
+
         val action = intent.action
         if (ACTION_DISMISS.equals(action)) {
             handleActionDismiss()
         } else if (ACTION_REPORT_SHORT.equals(action)) {
-            handleActionReportShort()
+            handleActionReport(event, REPORT_TIME_SHORT)
         } else if (ACTION_REPORT_LONG.equals(action)) {
-            handleActionReportLong()
-    }
+            handleActionReport(event, REPORT_TIME_LONG)
+        }
     }
 
     private fun handleActionDismiss() {
@@ -38,28 +44,7 @@ class NotificationIntentService : IntentService("NotificationIntentService") {
         notificationManagerCompat.cancel(NOTIFICATION_ID)
     }
 
-    private fun handleActionReportShort() {
-        Log.d(TAG, "handleActionSnooze()")
-
-        val notification: Notification?
-        notification = null
-
-        if (notification != null) {
-            val notificationManagerCompat = NotificationManagerCompat.from(applicationContext)
-
-            notificationManagerCompat.cancel(NOTIFICATION_ID)
-
-            try {
-                Thread.sleep(FIVE_MINUTES)
-            } catch (ex: InterruptedException) {
-                Thread.currentThread().interrupt()
-            }
-
-            notificationManagerCompat.notify(NOTIFICATION_ID, notification!!)
-        }
-    }
-
-    private fun handleActionReportLong() {
+    private fun handleActionReport(event : EventModel, reportTime : Long) {
         Log.d(TAG, "handleActionSnooze()")
 
         val notification: Notification?
