@@ -5,28 +5,28 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import android.app.*
-import android.content.Context
 import android.os.Handler
 import fr.tp1.harkame.tp1.db.helper.EventDBHelper
-import android.os.Build
 import fr.tp1.harkame.tp1.R
 import fr.tp1.harkame.tp1.activity.home.HomeActivity
 import android.app.PendingIntent
-
-
-/**
- * Created by Antho on 25/09/2018.
- */
+import android.support.v4.app.NotificationCompat
+import android.support.v4.app.NotificationManagerCompat
+import fr.tp1.harkame.tp1.EventModel
 
 class NotificationService : Service() {
-    private val DEFAULT_TIME_START_NOTIFICATION = 10
+    val ACTION_DISMISS = "fr.tp1.harkame.tp1.service.NotificationIntentService.DISMISS"
+    val ACTION_REPORT_5_MINUTES = "fr.tp1.harkame.tp1.service.NotificationIntentService.5Minutes"
+    val ACTION_REPORT_1_HOUR = "fr.tp1.harkame.tp1.service.NotificationIntentService.1Hour"
+
+    private val DEFAULT_TIME_START_NOTIFICATION = 5
 
     var timer: Timer? = null
     var timerTask: TimerTask? = null
     var TAG = "Timers"
 
     private lateinit var eventDBHelper: EventDBHelper
-    private var mNotificationManager: NotificationManager? = null
+    private var mNotificationManager: NotificationManagerCompat? = null
 
     private val CHANNEL_ID = "eventChannel"
 
@@ -45,7 +45,12 @@ class NotificationService : Service() {
 
     override fun onCreate() {
         Log.e(TAG, "onCreate")
-        mNotificationManager = createNotificationChannel()
+
+        mNotificationManager = NotificationManagerCompat.from(getApplicationContext())
+
+
+        val notificationCompatBuilder = NotificationCompat.Builder(applicationContext, "")
+        GlobalNotificationBuilder.notificationCompatBuilderInstance = notificationCompatBuilder
 
         eventDBHelper = EventDBHelper(this)
     }
@@ -56,24 +61,18 @@ class NotificationService : Service() {
         super.onDestroy()
     }
 
-    //we are going to use a handler to be able to run in our TimerTask
     val handler = Handler()
 
-
     fun startTimer() {
-        //set a new Timer
         timer = Timer()
 
-        //initialize the TimerTask's job
         initializeTimerTask()
 
-        //schedule the timer, after the first 10sec the TimerTask will run every 5 minutes
         timer!!.schedule(
                 timerTask,
                 10000,
                 DEFAULT_TIME_START_NOTIFICATION.toLong() * 30000
-        ) //
-        //timer.schedule(timerTask, 5000,1000); //
+        )
     }
 
     fun stoptimertask() {
@@ -88,67 +87,75 @@ class NotificationService : Service() {
 
         timerTask = object : TimerTask() {
             override fun run() {
-
-                //use a handler to run a toast that shows the current timestamp
-                handler.post(Runnable {
-                    //TODO CALL NOTIFICATION FUNC
-                    sendNotification()
-                })
+                handler.post{
+                    sendNotifications()
+                }
             }
         }
     }
 
-    fun sendNotification() {
+    fun sendNotifications() {
 
         val events = eventDBHelper.readAllEventsForToday()
         var notificationID = 0
 
-        var intent = Intent(this, HomeActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
-
         for (event in events) {
 
-            val snoozeIntent = Intent(this, NotificationService::class.java)
-            snoozeIntent.action = "com.android.wearable.wear.wearnotifications.handlers.action.SNOOZE"
-
-            val snoozePendingIntent = PendingIntent.getService(this, 0, snoozeIntent, 0)
-            val snoozeAction = android.app.Notification.Action.Builder(
-                    R.drawable.ic_launcher_background,
-                    "Snooze",
-                    snoozePendingIntent)
-                    .build()
-
-            // Build the shape of the notification
-            val mNotification = Notification.Builder(this,CHANNEL_ID)
-                    .setContentIntent(pendingIntent)
-                    .setSmallIcon(R.drawable.ic_notification)
-                    .setContentTitle("Evenement Aujourd'hui : " + event.name)
-                    .setContentText(event.description)
-                    .setChannelId(CHANNEL_ID)
-                    .setActions(snoozeAction)
-                    .build()
-
+            mNotificationManager!!.notify(notificationID, createNotification(event))
             notificationID++
-            mNotificationManager!!.notify(notificationID, mNotification)
+
         }
     }
 
-    fun createNotificationChannel(): NotificationManager? {
-        var mNotificationManager: NotificationManager? = null
+    fun createNotification(event: EventModel) : Notification
+    {
+        var intent = Intent(this, HomeActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            var name = getString(R.string.channel_name)
-            var description = getString(R.string.channel_description)
-            var importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(CHANNEL_ID, name, importance)
-            channel.setDescription(description)
+        val dismissIntent = Intent(this, NotificationIntentService::class.java)
+        dismissIntent.action = ACTION_DISMISS
 
-            // Gets an instance of the NotificationManager service//
-            mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            mNotificationManager.createNotificationChannel(channel)
+        val dismissPendingIntent = PendingIntent.getService(this, 0, dismissIntent, 0)
+        val dismissAction = android.support.v4.app.NotificationCompat.Action.Builder(
+                R.drawable.ic_check,
+                "Ok",
+                dismissPendingIntent)
+                .build()
 
-            return mNotificationManager
-        }
-        return mNotificationManager
+
+        val reportShortIntent = Intent(this, NotificationIntentService::class.java)
+        reportShortIntent.action = ACTION_REPORT_5_MINUTES
+
+        val reportShortPendingIntent = PendingIntent.getService(this, 0, reportShortIntent, 0)
+        val reportShortAction = android.support.v4.app.NotificationCompat.Action.Builder(
+                R.drawable.ic_alarm,
+                "Report 5 minutes",
+                reportShortPendingIntent)
+                .build()
+
+        val reportLongIntent = Intent(this, NotificationIntentService::class.java)
+        reportLongIntent.action = ACTION_REPORT_1_HOUR
+
+        val snoozePendingIntent = PendingIntent.getService(this, 0, reportLongIntent, 0)
+        val reportlongAction = android.support.v4.app.NotificationCompat.Action.Builder(
+                R.drawable.ic_alarm,
+                "Report 1 heure",
+                snoozePendingIntent)
+                .build()
+
+        val notificationCompatBuilder = NotificationCompat.Builder(applicationContext)
+
+        GlobalNotificationBuilder.notificationCompatBuilderInstance = notificationCompatBuilder
+
+        return notificationCompatBuilder
+                .setContentIntent(pendingIntent)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle("Evenement Aujourd'hui : " + event.name)
+                .setContentText(event.description)
+                .setChannelId(CHANNEL_ID)
+                .addAction(dismissAction)
+                .addAction(reportShortAction)
+                .addAction(reportlongAction)
+                .build()
     }
 }

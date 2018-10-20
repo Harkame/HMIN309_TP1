@@ -76,7 +76,7 @@ class EventCreationActivity : AppCompatActivity() {
             if(validEvent) {
 
                 val formatter = DateTimeFormat.forPattern("dd/MM/yyyy")
-                val dateTime = formatter.parseDateTime(eventDate)
+                val dateTime = formatter.parseDateTime(eventDate).withHourOfDay(23)
 
                 eventDBHelper.insertEvent(EventModel(eventName, dateTime, eventType, eventDescription, false))
 

@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
 import fr.tp1.harkame.tp1.DBContract
-import fr.tp1.harkame.tp1.DateUtils
 import fr.tp1.harkame.tp1.EventModel
 import org.joda.time.DateTime
 import java.util.*
@@ -23,9 +22,9 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
                 "CREATE TABLE " + DBContract.EventEntry.TABLE_NAME + " (" +
                         DBContract.EventEntry.COLUMN_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                         DBContract.EventEntry.COLUMN_EVENT_NAME + " TEXT," +
-                        DBContract.EventEntry.COLUMN_EVENT_DATE + " TEXT," +
+                        DBContract.EventEntry.COLUMN_EVENT_DATE + " INTEGER ," +
                         DBContract.EventEntry.COLUMN_EVENT_TYPE + " TEXT," +
-                        DBContract.EventEntry.COLUMN_EVENT_DESCRIPTION + " TEXT," +
+                        DBContract.EventEntry.COLUMN_EVENT_DESCRIPTION + " NUMBER," +
                         DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION + " INTEGER)"
 
         private const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + DBContract.EventEntry.TABLE_NAME
@@ -49,7 +48,7 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
 
         val values = ContentValues()
         values.put(DBContract.EventEntry.COLUMN_EVENT_NAME, event.name)
-        values.put(DBContract.EventEntry.COLUMN_EVENT_DATE, DateUtils.dateTimeToString(event.date))
+        values.put(DBContract.EventEntry.COLUMN_EVENT_DATE, event.date.millis)
         values.put(DBContract.EventEntry.COLUMN_EVENT_TYPE, event.type)
         values.put(DBContract.EventEntry.COLUMN_EVENT_DESCRIPTION, event.description)
         values.put(DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION, event.notification)
@@ -62,9 +61,11 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
     fun readAllEvents(): ArrayList<EventModel> {
         val database = writableDatabase
 
+        val dateOfTheDay = DateTime.now().withHourOfDay(0).millis
+
         var cursor: Cursor?
         try {
-            cursor = database.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " ORDER BY " + DBContract.EventEntry.COLUMN_EVENT_DATE + " ASC ", null)
+            cursor = database.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " WHERE event_date > " + dateOfTheDay + " ORDER BY " + DBContract.EventEntry.COLUMN_EVENT_DATE + " ASC ", null)
         } catch (e: SQLiteException) {
             return ArrayList()
         }
@@ -81,20 +82,50 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
     fun readAllEventsForToday(): ArrayList<EventModel> {
         val database = writableDatabase
 
-        val dateOfTheDay = DateTime.now()
-
         var cursor: Cursor?
 
         try {
-            cursor = database.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " WHERE event_date = '" + DateUtils.dateTimeToString(dateOfTheDay) + "' AND " + DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION + " = 1 "+ " ORDER BY event_date ASC", null)
+            cursor = database.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " WHERE " + DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION + " = 1 "+ " ORDER BY event_date ASC", null)
         } catch (e: SQLiteException) {
             return ArrayList()
         }
 
-        return cursorToList(cursor)
+        return cursorToListFilterCurrentDay(cursor)
     }
 
     private fun cursorToList(cursor: Cursor) : ArrayList<EventModel>{
+        var eventId: Int
+        var eventName: String
+        var eventDate: Long
+        var eventType: String
+        var eventDescription: String
+        var eventNotification: Boolean
+        val events = ArrayList<EventModel>()
+
+        val dateOfTheDay = DateTime.now().withHourOfDay(0).millis
+
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast) {
+                eventId = cursor.getInt(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_ID))
+                eventName = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_NAME))
+
+                eventDate = cursor.getLong(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_DATE))
+
+                if(eventDate > dateOfTheDay) {
+                    eventType = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_TYPE))
+                    eventDescription = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_DESCRIPTION))
+
+                    eventNotification = cursor.getInt(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION)) == 1
+
+                    events.add(EventModel(eventId, eventName, DateTime(eventDate), eventType, eventDescription, eventNotification))
+                }
+                cursor.moveToNext()
+            }
+        }
+        return events
+    }
+
+    private fun cursorToListFilterCurrentDay(cursor: Cursor) : ArrayList<EventModel>{
         var eventId: Int
         var eventName: String
         var eventDate: DateTime
@@ -107,7 +138,7 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
             while (!cursor.isAfterLast) {
                 eventId = cursor.getInt(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_ID))
                 eventName = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_NAME))
-                eventDate = DateUtils.stringToDateTime(cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_DATE)))
+                eventDate = DateTime(cursor.getLong(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_DATE)))
                 eventType = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_TYPE))
                 eventDescription = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_DESCRIPTION))
 
