@@ -17,7 +17,7 @@
             android:value="NO_BRIDGING" />
 
         <activity
-        android:name=".activity.home.HomeActivity"
+        android:name="fr.harkame.tp1.activity.home.HomeActivity"
         android:label="@string/app_name"
         android:theme="@style/AppTheme.NoActionBar">
         <intent-filter>
@@ -28,18 +28,18 @@
         </activity>
 
         <activity
-            android:name=".activity.creation.EventCreationActivity"
+            android:name="fr.harkame.tp1.activity.creation.EventCreationActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
 
         <service
-            android:name=".service.NotificationService"
+            android:name="fr.harkame.tp1.service.NotificationService"
             android:exported="false"/>
 
         <service
-            android:name=".service.NotificationIntentService"
+            android:name="fr.harkame.tp1.service.NotificationIntentService"
             android:exported="false"/>
 
     </application>
