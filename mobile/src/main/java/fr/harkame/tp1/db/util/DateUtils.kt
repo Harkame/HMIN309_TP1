@@ -11,10 +11,4 @@ object DateUtils {
     fun dateTimeToString(dateTime: DateTime): String{
          return DateTimeFormat.forPattern("dd/MM/yyyy").print(dateTime)
     }
-
-    @JvmStatic
-    fun stringToDateTime(eventDate: String): DateTime {
-        val formatter = DateTimeFormat.forPattern("dd/MM/yyyy")
-        return formatter.parseDateTime(eventDate)
-    }
 }

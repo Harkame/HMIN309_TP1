@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
 import fr.harkame.tp1.db.contract.DBContract
+import fr.harkame.tp1.db.contract.EventType
 import fr.harkame.tp1.db.model.EventModel
 import org.joda.time.DateTime
 import java.util.*
@@ -23,7 +24,7 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
                         DBContract.EventEntry.COLUMN_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                         DBContract.EventEntry.COLUMN_EVENT_NAME + " TEXT," +
                         DBContract.EventEntry.COLUMN_EVENT_DATE + " INTEGER ," +
-                        DBContract.EventEntry.COLUMN_EVENT_TYPE + " TEXT," +
+                        DBContract.EventEntry.COLUMN_EVENT_TYPE + " INTEGER," +
                         DBContract.EventEntry.COLUMN_EVENT_DESCRIPTION + " NUMBER," +
                         DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION + " INTEGER)"
 
@@ -49,7 +50,7 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         val values = ContentValues()
         values.put(DBContract.EventEntry.COLUMN_EVENT_NAME, event.name)
         values.put(DBContract.EventEntry.COLUMN_EVENT_DATE, event.date.millis)
-        values.put(DBContract.EventEntry.COLUMN_EVENT_TYPE, event.type)
+        values.put(DBContract.EventEntry.COLUMN_EVENT_TYPE, EventType.getIDFromType(event.type))
         values.put(DBContract.EventEntry.COLUMN_EVENT_DESCRIPTION, event.description)
         values.put(DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION, event.notification)
 
@@ -112,7 +113,7 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
                 eventDate = cursor.getLong(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_DATE))
 
                 if(eventDate > dateOfTheDay) {
-                    eventType = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_TYPE))
+                    eventType = EventType.getTypeFromID(cursor.getInt(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_TYPE)))
                     eventDescription = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_DESCRIPTION))
 
                     eventNotification = cursor.getInt(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION)) == 1
@@ -139,7 +140,7 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
                 eventId = cursor.getInt(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_ID))
                 eventName = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_NAME))
                 eventDate = DateTime(cursor.getLong(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_DATE)))
-                eventType = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_TYPE))
+                eventType = EventType.getTypeFromID(cursor.getInt(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_TYPE)))
                 eventDescription = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_DESCRIPTION))
 
                 eventNotification = cursor.getInt(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION)) == 1

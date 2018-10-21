@@ -1,13 +1,17 @@
 package fr.harkame.tp1.activity.creation
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import fr.harkame.tp1.activity.home.HomeActivity
+import fr.harkame.tp1.db.contract.EventType
 import fr.harkame.tp1.db.util.DateUtils
 import fr.harkame.tp1.db.helper.EventDBHelper
 import fr.harkame.tp1.db.model.EventModel
@@ -17,11 +21,11 @@ import org.joda.time.DateTime
 import java.util.*
 import org.joda.time.format.DateTimeFormat
 
-
-
 class EventCreationActivity : AppCompatActivity() {
 
     private lateinit var eventDBHelper : EventDBHelper
+
+    private lateinit var buttonType : Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +36,22 @@ class EventCreationActivity : AppCompatActivity() {
         val eventCreationDateButton = findViewById<Button>(R.id.eventCreationDate);
 
         eventCreationDateButton.text = DateUtils.dateTimeToString(DateTime.now())
+
+        buttonType = findViewById(R.id.eventCreationType)
+
+
+        buttonType.setOnClickListener {
+
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Choose an animal")
+
+            builder.setItems(EventType.eventTypes) { dialog, which ->
+                buttonType.text = EventType.getTypeFromID(which)
+            }
+
+            val dialog = builder.create()
+            dialog.show()
+        }
 
         eventCreationDateButton.setOnClickListener {
             val now = Calendar.getInstance()
@@ -59,14 +79,7 @@ class EventCreationActivity : AppCompatActivity() {
 
             val eventDate = findViewById<Button>(R.id.eventCreationDate).text.toString()
 
-            val eventType = findViewById<EditText>(R.id.eventCreationType).text.toString()
-
-            if(eventType.isEmpty()) {
-                Toast.makeText(applicationContext,
-                        "Type invalide", Toast.LENGTH_LONG).show()
-
-                validEvent = false
-            }
+            val eventType = buttonType.text.toString()
 
             val eventDescription = findViewById<EditText>(R.id.eventCreationDescription).text.toString()
 
