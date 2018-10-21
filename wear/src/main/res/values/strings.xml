@@ -42,5 +42,7 @@
         \n\nThe notification type for this example was the Messaging Style!
     </string>
     <string name="floating_text">Pick Notification Style</string>
+    <string name="default_speed">0.0</string>
+    <string name="start">Démarrer</string>
 
 </resources>

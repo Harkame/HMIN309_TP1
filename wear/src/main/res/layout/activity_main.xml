@@ -6,7 +6,7 @@
     android:id="@+id/mainFrameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.MainActivity">
+    tools:context="fr.harkame.tp1.MainActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
@@ -14,13 +14,43 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical" />
 
-    <TextView
-        android:id="@+id/header_text_view"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:paddingTop="@dimen/activity_main_text_header_spacing"
-        android:paddingBottom="@dimen/activity_main_text_header_spacing"
-        android:background="@color/grey"
-        android:text="text"/>
+        android:layout_marginTop="50dp"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/text_speed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:paddingTop="@dimen/activity_main_text_header_spacing"
+            android:paddingBottom="@dimen/activity_main_text_header_spacing"
+            android:background="@color/grey"
+            android:text="@string/default_speed"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        >
+
+        <Button
+            android:id="@+id/button_start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:paddingTop="@dimen/activity_main_text_header_spacing"
+            android:paddingBottom="@dimen/activity_main_text_header_spacing"
+            android:background="@color/grey"
+            android:text="@string/start"
+            />
+    </LinearLayout>
+
 </FrameLayout>
