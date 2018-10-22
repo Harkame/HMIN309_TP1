@@ -71,7 +71,8 @@
             android:id="@+id/eventCreationType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/example_sport"
+            android:text="@string/sport"
+            android:hint="@string/example_sport"
             android:singleLine="true"
             android:textSize="22sp"/>
     </LinearLayout>
@@ -95,7 +96,7 @@
             android:id="@+id/eventCreationDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/example_sport"
+            android:hint="@string/example_training"
             android:singleLine="true"
             android:textSize="22sp"/>
     </LinearLayout>

@@ -33,7 +33,7 @@ class EventModel : Serializable
     }
 
     override fun toString(): String {
-        var eventToString = StringBuilder()
+        val eventToString = StringBuilder()
 
         eventToString.append(name)
         eventToString.append(" - ")

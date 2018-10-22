@@ -12,10 +12,8 @@ import android.os.Vibrator
 import android.widget.TextView
 import android.hardware.SensorManager
 
-
-
-
 class MainActivity : WearableActivity(), SensorEventListener {
+
     private val LOCATION_INTERVAL = 10000L
     private val LOCATION_DISTANCE = 10f
 
@@ -36,6 +34,8 @@ class MainActivity : WearableActivity(), SensorEventListener {
     var v: Vibrator? = null
 
     private lateinit var speedTextView : TextView
+
+    private var androidWearCapability : String = "voice_transcription"
 
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {

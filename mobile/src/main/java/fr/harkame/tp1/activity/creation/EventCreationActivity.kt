@@ -1,12 +1,11 @@
 package fr.harkame.tp1.activity.creation
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
-import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -27,6 +26,7 @@ class EventCreationActivity : AppCompatActivity() {
 
     private lateinit var buttonType : Button
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_event_creation)
@@ -43,7 +43,7 @@ class EventCreationActivity : AppCompatActivity() {
         buttonType.setOnClickListener {
 
             val builder = AlertDialog.Builder(this)
-            builder.setTitle("Choose an animal")
+            builder.setTitle("Types")
 
             builder.setItems(EventType.eventTypes) { dialog, which ->
                 buttonType.text = EventType.getTypeFromID(which)

@@ -1,4 +1,4 @@
-package fr.harkame.tp1.activity.adapter
+package fr.harkame.tp1.adapter
 
 import android.app.Activity
 import android.content.Context

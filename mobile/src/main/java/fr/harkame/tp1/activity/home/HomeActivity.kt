@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ListView
-import fr.harkame.tp1.activity.adapter.HomeEventAdapter
+import fr.harkame.tp1.adapter.HomeEventAdapter
 import fr.harkame.tp1.activity.creation.EventCreationActivity
 import fr.harkame.tp1.db.helper.EventDBHelper
 import fr.tp1.harkame.tp1.R
@@ -17,9 +17,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import fr.harkame.tp1.service.NotificationService
 
-
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-
     private lateinit var eventDBHelper: EventDBHelper
 
     private lateinit var homeEventAdapter : HomeEventAdapter
@@ -83,8 +81,4 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
-
-
-
-
 }
