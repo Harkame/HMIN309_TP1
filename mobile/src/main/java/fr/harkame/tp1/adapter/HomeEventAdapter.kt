@@ -5,10 +5,10 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import fr.tp1.harkame.tp1.R
 import fr.harkame.tp1.db.model.ViewHolder
 import android.widget.CheckBox
 import android.widget.TextView
+import fr.harkame.tp1.R
 import fr.harkame.tp1.db.model.EventModel
 import fr.harkame.tp1.db.helper.EventDBHelper
 

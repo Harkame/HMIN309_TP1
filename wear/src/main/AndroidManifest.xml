@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="fr.tp1.harkame.tp1">
+    package="fr.harkame.tp1">
 
     <uses-feature android:name="android.hardware.type.watch" />
 
@@ -21,11 +21,22 @@
                app to run.
         -->
         <meta-data
-            android:name="com.google.android.wearable.standalone"
-            android:value="true" />
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <service
+            android:name="fr.harkame.tp1.service.MessageListenerService">
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+                <action android:name="com.google.android.gms.wearable.CAPABILITY_CHANGED" />
+                <action android:name="com.google.android.gms.wearable.CHANNEL_EVENT" />
+                <data android:scheme="wear" android:host="*" android:path="/start-activity" />
+            </intent-filter>
+        </service>
 
         <activity
-            android:name="fr.harkame.tp1.MainActivity"
+            android:name="fr.harkame.tp1.activity.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

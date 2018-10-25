@@ -1,1 +1,2 @@
 adb -d forward tcp:5601 tcp:5601
+https://www.reddit.com/r/learnprogramming/comments/74aph0/onmessagereceived_not_getting_called_on_my_phone/

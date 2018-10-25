@@ -9,12 +9,12 @@ import android.support.v7.app.AppCompatActivity
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import fr.harkame.tp1.R
 import fr.harkame.tp1.activity.home.HomeActivity
 import fr.harkame.tp1.db.contract.EventType
 import fr.harkame.tp1.db.util.DateUtils
 import fr.harkame.tp1.db.helper.EventDBHelper
 import fr.harkame.tp1.db.model.EventModel
-import fr.tp1.harkame.tp1.R
 import kotlinx.android.synthetic.main.activity_event_creation.*
 import org.joda.time.DateTime
 import java.util.*
@@ -26,7 +26,6 @@ class EventCreationActivity : AppCompatActivity() {
 
     private lateinit var buttonType : Button
 
-    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_event_creation)

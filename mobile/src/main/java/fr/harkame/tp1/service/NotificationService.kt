@@ -7,10 +7,10 @@ import android.util.Log
 import android.app.*
 import android.os.Handler
 import fr.harkame.tp1.db.helper.EventDBHelper
-import fr.tp1.harkame.tp1.R
 import android.app.PendingIntent
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
+import fr.harkame.tp1.R
 import fr.harkame.tp1.activity.home.HomeActivity
 import fr.harkame.tp1.db.model.EventModel
 

@@ -6,21 +6,37 @@ import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ListView
+import com.github.jrejaud.wear_socket.WearSocket
 import fr.harkame.tp1.adapter.HomeEventAdapter
 import fr.harkame.tp1.activity.creation.EventCreationActivity
 import fr.harkame.tp1.db.helper.EventDBHelper
-import fr.tp1.harkame.tp1.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import fr.harkame.tp1.service.NotificationService
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.wearable.Wearable
+import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.common.api.ResultCallback
+import com.google.android.gms.wearable.NodeApi
+import fr.harkame.tp1.R
 
-class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
+class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+    companion object {
+        private const val TAG = "HomeActivity"
+        private const val START_ACTIVITY_PATH = "/start-activity"
+    }
     private lateinit var eventDBHelper: EventDBHelper
 
     private lateinit var homeEventAdapter : HomeEventAdapter
+
+    private lateinit var mGoogleApiClient: GoogleApiClient
+
+    private lateinit var wearSocket : WearSocket
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +67,42 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         nav_view.setNavigationItemSelectedListener(this)
 
         startService(Intent(this, NotificationService::class.java))
+
+        mGoogleApiClient = GoogleApiClient.Builder(this)
+                .addApi(Wearable.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build()
+        mGoogleApiClient!!.connect()
+
+        Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).setResultCallback(object : ResultCallback<NodeApi.GetConnectedNodesResult> {
+            override fun onResult(getConnectedNodesResult: NodeApi.GetConnectedNodesResult) {
+                for (node in getConnectedNodesResult.nodes) {
+                    sendMessage(node.id)
+
+                    Log.d(TAG, node.toString())
+                }
+                mGoogleApiClient.disconnect()
+            }
+        })
+
+        wearSocket = WearSocket.getInstance();
+
+        wearSocket.setupAndConnect(this, "voice_transcription") {
+            //Throws an error here if there is a problem connecting to the other device.
+        }
+
+        wearSocket.sendMessage("/start-activity","myMessage")
+    }
+
+    private fun sendMessage(node: String) {
+        val charset = Charsets.UTF_8
+        val byteArray = "Hello".toByteArray(charset)
+
+        Wearable.getMessageClient(this).sendMessage(node, START_ACTIVITY_PATH, byteArray).apply {
+            addOnSuccessListener { Log.d("HomeActivity : ", "Message sended") }
+            addOnFailureListener { Log.e("HomeActivity : ", "Fail to send message") }
+        }
     }
 
     override fun onBackPressed() {
@@ -80,5 +132,19 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    override fun onConnected(p0: Bundle?) {
+        Log.d(TAG, "onConneted:")
+    }
+
+
+
+    override fun onConnectionSuspended(i: Int) {
+        Log.d(TAG, "onConnectionSuspended: $i")
+    }
+
+    override fun onConnectionFailed(connectionResult: ConnectionResult) {
+        Log.d(TAG, "onConnectionFailed: $connectionResult")
     }
 }

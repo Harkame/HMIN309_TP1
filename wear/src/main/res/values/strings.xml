@@ -44,5 +44,6 @@
     <string name="floating_text">Pick Notification Style</string>
     <string name="default_speed">0.0</string>
     <string name="start">Démarrer</string>
+    <string name="stop">Stop</string>
 
 </resources>
