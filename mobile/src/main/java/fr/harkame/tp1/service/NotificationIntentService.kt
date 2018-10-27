@@ -11,9 +11,13 @@ class NotificationIntentService : IntentService("NotificationIntentService") {
     private val CHANNEL_ID = "eventChannel"
     var TAG = "Timers"
 
-    val ACTION_DISMISS = "fr.harkame.tp1.service.NotificationIntentService.DismissAction"
-    val ACTION_REPORT_SHORT = "fr.harkame.tp1.service.NotificationIntentService.ActionReportShort"
-    val ACTION_REPORT_LONG = "fr.harkame.tp1.service.NotificationIntentService.ActionReportLongAction"
+    companion object {
+        const val ACTION_DISMISS = "fr.harkame.tp1.service.NotificationIntentService.DismissAction"
+        const val ACTION_REPORT_SHORT = "fr.harkame.tp1.service.NotificationIntentService.ActionReportShort"
+        const val ACTION_REPORT_LONG = "fr.harkame.tp1.service.NotificationIntentService.ActionReportLongAction"
+        const val ACTION_START_SPORT_ACTIVITY = "fr.harkame.tp1.service.NotificationIntentService.ActionStartSportActivity"
+    }
+
 
     val REPORT_TIME_SHORT = 300000L
     val REPORT_TIME_LONG = 3600000L
@@ -40,6 +44,8 @@ class NotificationIntentService : IntentService("NotificationIntentService") {
             handleActionReport(event, REPORT_TIME_SHORT)
         } else if (ACTION_REPORT_LONG.equals(action)) {
             handleActionReport(event, REPORT_TIME_LONG)
+        } else if (ACTION_START_SPORT_ACTIVITY.equals(action)) {
+            handleActionReport(event, REPORT_TIME_LONG)
         }
     }
 
@@ -53,6 +59,27 @@ class NotificationIntentService : IntentService("NotificationIntentService") {
     }
 
     private fun handleActionReport(event : EventModel, reportTime : Long) {
+        Log.d(TAG, "handleActionSnooze()")
+
+        val notification: Notification?
+        notification = null
+
+        if (notification != null) {
+            val notificationManagerCompat = NotificationManagerCompat.from(applicationContext)
+
+            notificationManagerCompat.cancel(NOTIFICATION_ID)
+
+            try {
+                Thread.sleep(HOUR)
+            } catch (ex: InterruptedException) {
+                Thread.currentThread().interrupt()
+            }
+
+            notificationManagerCompat.notify(NOTIFICATION_ID, notification!!)
+        }
+    }
+
+    private fun handleActionStartSportActivity(event : EventModel, reportTime : Long) {
         Log.d(TAG, "handleActionSnooze()")
 
         val notification: Notification?

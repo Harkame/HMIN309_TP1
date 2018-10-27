@@ -12,13 +12,11 @@ import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import fr.harkame.tp1.R
 import fr.harkame.tp1.activity.home.HomeActivity
+import fr.harkame.tp1.db.contract.EventType
 import fr.harkame.tp1.db.model.EventModel
+import fr.harkame.tp1.service.NotificationIntentService.Companion.ACTION_REPORT_SHORT
 
 class NotificationService : Service() {
-    val ACTION_DISMISS = "fr.harkame.tp1.service.NotificationIntentService.DismissAction"
-    val ACTION_REPORT_SHORT = "fr.harkame.tp1.service.NotificationIntentService.ActionReportShort"
-    val ACTION_REPORT_LONG = "fr.harkame.tp1.service.NotificationIntentService.ActionReportLongAction"
-
     private val DEFAULT_TIME_START_NOTIFICATION = 5
 
     var timer: Timer? = null
@@ -111,7 +109,7 @@ class NotificationService : Service() {
 
 
         val dismissIntent = Intent(this, NotificationIntentService::class.java)
-        dismissIntent.action = ACTION_DISMISS
+        dismissIntent.action = NotificationIntentService.ACTION_DISMISS
 
         dismissIntent.putExtra("event", event)
 
@@ -137,7 +135,7 @@ class NotificationService : Service() {
                 .build()
 
         val reportLongIntent = Intent(this, NotificationIntentService::class.java)
-        reportLongIntent.action = ACTION_REPORT_LONG
+        reportLongIntent.action = NotificationIntentService.ACTION_REPORT_LONG
 
         reportLongIntent.putExtra("event", event)
 
@@ -148,17 +146,47 @@ class NotificationService : Service() {
                 reportLongPendingIntentService)
                 .build()
 
+        val startSportActivity = Intent(this, NotificationIntentService::class.java)
+        startSportActivity.action = NotificationIntentService.ACTION_START_SPORT_ACTIVITY
+
+        startSportActivity.putExtra("event", event)
+
+        val startSportActivityPendingIntentService = PendingIntent.getService(this, 0, reportLongIntent, 0)
+        val startSportActivitygAction = android.support.v4.app.NotificationCompat.Action.Builder(
+                R.drawable.ic_alarm,
+                "Report : 1 heure",
+                startSportActivityPendingIntentService)
+                .build()
+
         val notificationCompatBuilder = NotificationCompat.Builder(applicationContext)
 
-        return notificationCompatBuilder
-                .setContentIntent(pendingIntent)
-                .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle("Evenement Aujourd'hui : " + event.name)
-                .setContentText(event.description)
-                .setChannelId(CHANNEL_ID)
-                .addAction(dismissAction)
-                .addAction(reportShortAction)
-                .addAction(reportlongAction)
-                .build()
+        if(event.type == EventType.eventTypes[0])
+        {
+            return notificationCompatBuilder
+                    .setContentIntent(pendingIntent)
+                    .setSmallIcon(R.drawable.ic_notification)
+                    .setContentTitle("Evenement Aujourd'hui : " + event.name)
+                    .setContentText(event.description)
+                    .setChannelId(CHANNEL_ID)
+                    .addAction(startSportActivitygAction)
+                    .addAction(dismissAction)
+                    .addAction(reportShortAction)
+                    .addAction(reportlongAction)
+                    .build()
+        }
+        else
+        {
+            return notificationCompatBuilder
+                    .setContentIntent(pendingIntent)
+                    .setSmallIcon(R.drawable.ic_notification)
+                    .setContentTitle("Evenement Aujourd'hui : " + event.name)
+                    .setContentText(event.description)
+                    .setChannelId(CHANNEL_ID)
+                    .addAction(dismissAction)
+                    .addAction(reportShortAction)
+                    .addAction(reportlongAction)
+                    .build()
+        }
+
     }
 }
