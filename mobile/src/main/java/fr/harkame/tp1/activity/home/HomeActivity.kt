@@ -70,43 +70,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         nav_view.setNavigationItemSelectedListener(this)
 
         startService(Intent(this, NotificationService::class.java))
-
-
-
-
-
-        /*
-        mGoogleApiClient = GoogleApiClient.Builder(this)
-                .addApi(Wearable.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build()
-        mGoogleApiClient!!.connect()
-
-        Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).setResultCallback(object : ResultCallback<NodeApi.GetConnectedNodesResult> {
-            override fun onResult(getConnectedNodesResult: NodeApi.GetConnectedNodesResult) {
-                for (node in getConnectedNodesResult.nodes) {
-                    sendMessage(node.id)
-
-                    Log.d(TAG, node.toString())
-                }
-                mGoogleApiClient.disconnect()
-            }
-        })
-        */
     }
-
-    /*
-    private fun sendMessage(node: String) {
-        val charset = Charsets.UTF_8
-        val byteArray = "Hello".toByteArray(charset)
-
-        Wearable.getMessageClient(this).sendMessage(node, START_ACTIVITY_PATH, byteArray).apply {
-            addOnSuccessListener { Log.d("HomeActivity : ", "Message sended") }
-            addOnFailureListener { Log.e("HomeActivity : ", "Fail to send message") }
-        }
-    }
-    */
 
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
@@ -140,8 +104,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onConnected(p0: Bundle?) {
         Log.d(TAG, "onConneted:")
     }
-
-
 
     override fun onConnectionSuspended(i: Int) {
         Log.d(TAG, "onConnectionSuspended: $i")

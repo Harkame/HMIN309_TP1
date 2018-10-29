@@ -8,8 +8,6 @@ import android.app.*
 import android.os.Handler
 import fr.harkame.tp1.db.helper.EventDBHelper
 import android.app.PendingIntent
-import android.content.Context
-import android.os.Build
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import fr.harkame.tp1.R
@@ -29,6 +27,10 @@ class NotificationService : Service() {
     private var mNotificationManager: NotificationManagerCompat? = null
 
     private val CHANNEL_ID = "notify_001"
+
+    companion object {
+        var NOTIFICATION_ID = 0
+    }
 
     override fun onBind(arg0: Intent): IBinder? {
         return null
@@ -94,13 +96,11 @@ class NotificationService : Service() {
 
         val events = eventDBHelper.readAllEventsForToday()
 
-        var notificationID = 0
-
         for (event in events)
         {
-            mNotificationManager!!.notify(notificationID, createNotification(event))
+            mNotificationManager!!.notify(NOTIFICATION_ID, createNotification(event))
 
-            notificationID++
+            NOTIFICATION_ID++
         }
     }
 
@@ -110,11 +110,11 @@ class NotificationService : Service() {
 
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
 
-
         val dismissIntent = Intent(this, NotificationIntentService::class.java)
         dismissIntent.action = NotificationIntentService.ACTION_DISMISS
 
         dismissIntent.putExtra("event", event)
+        dismissIntent.putExtra("notification_id", NOTIFICATION_ID)
 
         val dismissPendingIntent = PendingIntent.getService(this, 0, dismissIntent, 0)
         val dismissAction = android.support.v4.app.NotificationCompat.Action.Builder(
@@ -128,6 +128,7 @@ class NotificationService : Service() {
         reportShortIntent.action = ACTION_REPORT_SHORT
 
         reportShortIntent.putExtra("event", event)
+        reportShortIntent.putExtra("notification_id", NOTIFICATION_ID)
 
         val reportShortPendingIntent = PendingIntent.getService(this, 0, reportShortIntent, 0)
 
@@ -141,6 +142,7 @@ class NotificationService : Service() {
         reportLongIntent.action = NotificationIntentService.ACTION_REPORT_LONG
 
         reportLongIntent.putExtra("event", event)
+        reportLongIntent.putExtra("notification_id", NOTIFICATION_ID)
 
         val reportLongPendingIntentService = PendingIntent.getService(this, 0, reportLongIntent, 0)
         val reportlongAction = android.support.v4.app.NotificationCompat.Action.Builder(
@@ -168,6 +170,7 @@ class NotificationService : Service() {
             startSportActivityIntent.action = NotificationIntentService.ACTION_START_SPORT_ACTIVITY
 
             startSportActivityIntent.putExtra("event", event)
+            startSportActivityIntent.putExtra("notification_id", NOTIFICATION_ID)
 
             val startSportActivityPendingIntentService = PendingIntent.getService(this, 0, startSportActivityIntent, 0)
             val startSportActivitygAction = android.support.v4.app.NotificationCompat.Action.Builder(

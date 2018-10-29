@@ -15,20 +15,15 @@ class NotificationIntentService : IntentService("NotificationIntentService") {
     var TAG = "Timers"
 
     companion object {
-        const val ACTION_DISMISS = "fr.harkame.tp1.service.NotificationIntentService.DismissAction"
-        const val ACTION_REPORT_SHORT = "fr.harkame.tp1.service.NotificationIntentService.ActionReportShort"
-        const val ACTION_REPORT_LONG = "fr.harkame.tp1.service.NotificationIntentService.ActionReportLongAction"
-        const val ACTION_START_SPORT_ACTIVITY = "fr.harkame.tp1.service.NotificationIntentService.ActionStartSportActivity"
+        const val ACTION_DISMISS = "fr.harkame.service.NotificationIntentService.DismissAction"
+        const val ACTION_REPORT_SHORT = "fr.harkame.service.NotificationIntentService.ActionReportShort"
+        const val ACTION_REPORT_LONG = "fr.harkame.service.NotificationIntentService.ActionReportLongAction"
+        const val ACTION_START_SPORT_ACTIVITY = "fr.harkame.service.NotificationIntentService.ActionStartSportActivity"
     }
 
 
     val REPORT_TIME_SHORT = 300000L
     val REPORT_TIME_LONG = 3600000L
-
-    val NOTIFICATION_ID = 888
-
-    val FIVE_MINUTES = 300L
-    val HOUR = 3600000L
 
     private lateinit var eventDBHelper: EventDBHelper
 
@@ -39,50 +34,47 @@ class NotificationIntentService : IntentService("NotificationIntentService") {
         Log.d(TAG, "onHandleIntent(): " + intent!!)
 
         var event = intent.getSerializableExtra("event") as EventModel
+        var notificationID = intent.getIntExtra("notification_id", -1)
 
         val action = intent.action
-        if (ACTION_DISMISS.equals(action)) {
-            handleActionDismiss(event)
-        } else if (ACTION_REPORT_SHORT.equals(action)) {
-            handleActionReport(event, REPORT_TIME_SHORT)
-        } else if (ACTION_REPORT_LONG.equals(action)) {
-            handleActionReport(event, REPORT_TIME_LONG)
-        } else if (ACTION_START_SPORT_ACTIVITY.equals(action)) {
-            handleActionStartSportActivity(event, REPORT_TIME_LONG)
-        }
+
+        if (ACTION_DISMISS.equals(action))
+            handleActionDismiss(event, notificationID)
+        else if (ACTION_REPORT_SHORT.equals(action))
+            handleActionReport(event, REPORT_TIME_SHORT, notificationID)
+        else if (ACTION_REPORT_LONG.equals(action))
+            handleActionReport(event, REPORT_TIME_LONG, notificationID)
+        else if (ACTION_START_SPORT_ACTIVITY.equals(action))
+            handleActionStartSportActivity(event, notificationID)
     }
 
-    private fun handleActionDismiss(event : EventModel) {
-        Log.d(TAG, "handleActionDismiss()")
+    private fun handleActionDismiss(event : EventModel, notificationID : Int) {
+        Log.d(TAG, "handleActionDismiss")
 
         val notificationManagerCompat = NotificationManagerCompat.from(applicationContext)
-        notificationManagerCompat.cancel(NOTIFICATION_ID)
+        notificationManagerCompat.cancel(notificationID)
 
         eventDBHelper.updateNotification(event.id, 0)
     }
 
-    private fun handleActionReport(event : EventModel, reportTime : Long) {
+    private fun handleActionReport(event : EventModel, reportTime : Long, notificationID : Int) {
         Log.d(TAG, "handleActionSnooze()")
 
-        val notification: Notification?
-        notification = null
+        val notificationManagerCompat = NotificationManagerCompat.from(applicationContext)
 
-        if (notification != null) {
-            val notificationManagerCompat = NotificationManagerCompat.from(applicationContext)
+        notificationManagerCompat.cancel(notificationID)
 
-            notificationManagerCompat.cancel(NOTIFICATION_ID)
-
-            try {
-                Thread.sleep(HOUR)
-            } catch (ex: InterruptedException) {
-                Thread.currentThread().interrupt()
-            }
-
-            notificationManagerCompat.notify(NOTIFICATION_ID, notification!!)
+        try {
+            Thread.sleep(reportTime)
+        } catch (ex: InterruptedException) {
+            Thread.currentThread().interrupt()
         }
+
+        //notificationManagerCompat.notify(NotificationService.NOTIFICATION_ID, notification!!)
+
     }
 
-    private fun handleActionStartSportActivity(event : EventModel, reportTime : Long) {
+    private fun handleActionStartSportActivity(event : EventModel, notificationID : Int) {
         Log.d(TAG, "handleActionSnooze()")
 
         val notificationManagerCompat = NotificationManagerCompat.from(applicationContext)
@@ -90,13 +82,15 @@ class NotificationIntentService : IntentService("NotificationIntentService") {
         wearSocket = WearSocket.getInstance();
 
         wearSocket.setupAndConnect(this, "voice_transcription") {
-            //Throws an error here if there is a problem connecting to the other device.
-        }
 
-        wearSocket.sendMessage("/start-activity","myMessage")
+        }
 
         Log.d(TAG, "Message sended")
 
-        notificationManagerCompat.cancel(NOTIFICATION_ID)
+        notificationManagerCompat.cancel(notificationID)
+
+        //eventDBHelper.updateNotification(event.id, 0)
+
+        wearSocket.sendMessage("/start-activity","")
     }
 }
