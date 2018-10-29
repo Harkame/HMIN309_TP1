@@ -4,11 +4,14 @@ import android.content.Intent
 import android.util.Log
 import android.app.*
 import android.support.v4.app.NotificationManagerCompat
+import com.github.jrejaud.wear_socket.WearSocket
 import fr.harkame.tp1.db.model.EventModel
 import fr.harkame.tp1.db.helper.EventDBHelper
 
 class NotificationIntentService : IntentService("NotificationIntentService") {
-    private val CHANNEL_ID = "eventChannel"
+
+    private lateinit var wearSocket : WearSocket
+
     var TAG = "Timers"
 
     companion object {
@@ -45,7 +48,7 @@ class NotificationIntentService : IntentService("NotificationIntentService") {
         } else if (ACTION_REPORT_LONG.equals(action)) {
             handleActionReport(event, REPORT_TIME_LONG)
         } else if (ACTION_START_SPORT_ACTIVITY.equals(action)) {
-            handleActionReport(event, REPORT_TIME_LONG)
+            handleActionStartSportActivity(event, REPORT_TIME_LONG)
         }
     }
 
@@ -82,21 +85,18 @@ class NotificationIntentService : IntentService("NotificationIntentService") {
     private fun handleActionStartSportActivity(event : EventModel, reportTime : Long) {
         Log.d(TAG, "handleActionSnooze()")
 
-        val notification: Notification?
-        notification = null
+        val notificationManagerCompat = NotificationManagerCompat.from(applicationContext)
 
-        if (notification != null) {
-            val notificationManagerCompat = NotificationManagerCompat.from(applicationContext)
+        wearSocket = WearSocket.getInstance();
 
-            notificationManagerCompat.cancel(NOTIFICATION_ID)
-
-            try {
-                Thread.sleep(HOUR)
-            } catch (ex: InterruptedException) {
-                Thread.currentThread().interrupt()
-            }
-
-            notificationManagerCompat.notify(NOTIFICATION_ID, notification!!)
+        wearSocket.setupAndConnect(this, "voice_transcription") {
+            //Throws an error here if there is a problem connecting to the other device.
         }
+
+        wearSocket.sendMessage("/start-activity","myMessage")
+
+        Log.d(TAG, "Message sended")
+
+        notificationManagerCompat.cancel(NOTIFICATION_ID)
     }
 }

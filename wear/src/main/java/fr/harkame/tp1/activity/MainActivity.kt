@@ -91,9 +91,7 @@ class MainActivity : WearableActivity(), SensorEventListener, WearSocket.Message
 
         wearSocket.startMessageListener(this,"/start-activity")
 
-        //startService(Intent(this, MessageListenerService::class.java))
-
-
+        startService(Intent(this, MessageListenerService::class.java))
 
         setAmbientEnabled()
     }
