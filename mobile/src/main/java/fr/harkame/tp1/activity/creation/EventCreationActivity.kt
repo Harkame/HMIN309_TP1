@@ -6,6 +6,7 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -22,12 +23,19 @@ import org.joda.time.format.DateTimeFormat
 
 class EventCreationActivity : AppCompatActivity() {
 
+    companion object {
+        private const val TAG = "HomeActivity"
+    }
+
     private lateinit var eventDBHelper : EventDBHelper
 
     private lateinit var buttonType : Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Log.d(TAG, "onCreate")
+
         setContentView(R.layout.activity_event_creation)
 
         eventDBHelper = EventDBHelper(this)

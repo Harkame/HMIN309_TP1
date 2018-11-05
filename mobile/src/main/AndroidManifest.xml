@@ -36,11 +36,15 @@
         </activity>
 
         <service
-            android:name=".service.NotificationService"
+            android:name=".service.notification.NotificationService"
             android:exported="false" />
         <service
-            android:name=".service.NotificationIntentService"
+            android:name=".service.notification.NotificationIntentService"
             android:exported="false" />
+        <service
+            android:name=".service.wear.WearDataService"
+            android:exported="false" />
+
     </application>
 
 </manifest>

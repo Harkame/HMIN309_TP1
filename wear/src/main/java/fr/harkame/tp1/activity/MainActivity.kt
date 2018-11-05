@@ -9,22 +9,27 @@ import android.os.Bundle
 import android.support.wearable.activity.WearableActivity
 import android.widget.TextView
 import android.hardware.SensorManager
+import android.os.Handler
 import android.util.Log
 import android.widget.Button
-import com.github.jrejaud.wear_socket.WearSocket
+import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.common.api.ResultCallback
+import com.google.android.gms.wearable.MessageApi
+import com.google.android.gms.wearable.Node
+import com.google.android.gms.wearable.NodeApi
+import com.google.android.gms.wearable.Wearable
 import fr.harkame.tp1.R
 import fr.harkame.tp1.service.MessageListenerService
-import com.github.jrejaud.wear_socket.WearSocket.onErrorListener
+import java.util.*
 
-
-
-
-class MainActivity : WearableActivity(), SensorEventListener, WearSocket.MessageListener {
-
+class MainActivity : WearableActivity(), SensorEventListener
+{
     companion object {
         val TAG = "MainActivity"
         val LOCATION_INTERVAL = 10000L
         val LOCATION_DISTANCE = 10f
+
+        private const val WEAR_DATA_PATH = "/wear-data"
     }
 
     private val lastX: Float = 0F
@@ -44,11 +49,17 @@ class MainActivity : WearableActivity(), SensorEventListener, WearSocket.Message
 
     private var started : Boolean = false
 
-    private lateinit var wearSocket : WearSocket
+    private lateinit var timer: Timer
+    private lateinit var timerTask: TimerTask
+    private lateinit var handler : Handler
+
+    private val DEFAULT_TIME_START_NOTIFICATION = 10L
+
+    private lateinit var mGoogleApiClient: GoogleApiClient
+
+    private lateinit var mNode: Node
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -83,15 +94,9 @@ class MainActivity : WearableActivity(), SensorEventListener, WearSocket.Message
             }
         }
 
-        wearSocket = WearSocket.getInstance();
-
-        wearSocket.setupAndConnect(this, "voice_transcription") {
-            //Throws an error here if there is a problem connecting to the other device.
-        }
-
-        wearSocket.startMessageListener(this,"/start-activity")
-
         startService(Intent(this, MessageListenerService::class.java))
+
+        startTimer()
 
         setAmbientEnabled()
     }
@@ -116,23 +121,104 @@ class MainActivity : WearableActivity(), SensorEventListener, WearSocket.Message
     fun displayMaxValues() {
         if (deltaX > deltaXMax) {
             deltaXMax = deltaX
-            speedTextView.setText(java.lang.Float.toString(deltaXMax))
+            speedTextView.text = java.lang.Float.toString(deltaXMax)
         }
         if (deltaY > deltaYMax) {
             deltaYMax = deltaY
-            speedTextView.setText(java.lang.Float.toString(deltaYMax))
+            speedTextView.text = java.lang.Float.toString(deltaYMax)
         }
         if (deltaZ > deltaZMax) {
             deltaZMax = deltaZ
-            speedTextView.setText(java.lang.Float.toString(deltaZMax))
+            speedTextView.text = java.lang.Float.toString(deltaZMax)
         }
     }
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun messageReceived(path: String, message: String) {
-        Log.d(TAG, path.plus(" [NOUVEAU MESSAGE] ").plus(message))
+    fun startTimer() {
+        timer = Timer()
+
+        initializeTimerTask()
+
+        timer.schedule(
+                timerTask,
+                DEFAULT_TIME_START_NOTIFICATION,
+                DEFAULT_TIME_START_NOTIFICATION * 300
+        )
+    }
+
+    fun stoptimertask()
+    {
+        timer.cancel()
+    }
+
+    fun initializeTimerTask() {
+
+        handler = Handler()
+        timerTask = object : TimerTask()
+        {
+            override fun run()
+            {
+                handler.post{
+                    var data = ""
+
+                    if (deltaX > deltaXMax) {
+                        deltaXMax = deltaX
+                        data = java.lang.Float.toString(deltaXMax)
+                    }
+                    if (deltaY > deltaYMax) {
+                        deltaYMax = deltaY
+                        data = java.lang.Float.toString(deltaYMax)
+                    }
+                    if (deltaZ > deltaZMax) {
+                        deltaZMax = deltaZ
+                        data = java.lang.Float.toString(deltaZMax)
+                    }
+
+                    resolveNode()
+
+                    Log.d(TAG, "Message sended")
+                }
+            }
+        }
+    }
+
+    private fun resolveNode() {
+        Log.d(TAG, "resolveNode")
+
+        mGoogleApiClient = GoogleApiClient.Builder(this)
+                .addApi(Wearable.API)
+                .build()
+
+        mGoogleApiClient.connect()
+
+        Wearable.NodeApi.getConnectedNodes(mGoogleApiClient)
+                .setResultCallback(object : ResultCallback<NodeApi.GetConnectedNodesResult> {
+                    override fun onResult(connectedNodes: NodeApi.GetConnectedNodesResult) {
+                        for (connectedNode in connectedNodes.nodes) {
+                            mNode = connectedNode
+                            sendMessage(WEAR_DATA_PATH, "")
+                        }
+                    }
+                })
+    }
+
+
+    private fun sendMessage(subject: String, message: String) {
+        Log.d(TAG, "sendMessage")
+
+        Wearable.MessageApi.sendMessage(mGoogleApiClient,
+                mNode.id,
+                subject,
+                message.toByteArray())
+                .setResultCallback(object : ResultCallback<MessageApi.SendMessageResult> {
+                    override fun onResult(sendMessageResult: MessageApi.SendMessageResult) {
+                        if (sendMessageResult.status.isSuccess)
+                            Log.d(TAG, "Message sended")
+                        else
+                            Log.e(TAG, "Message not sended")
+                    }
+                })
     }
 }

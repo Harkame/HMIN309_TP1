@@ -1,4 +1,4 @@
-package fr.harkame.tp1.service
+package fr.harkame.tp1.service.notification
 
 import java.util.*
 import android.content.Intent
@@ -14,31 +14,33 @@ import fr.harkame.tp1.R
 import fr.harkame.tp1.activity.home.HomeActivity
 import fr.harkame.tp1.db.contract.EventType
 import fr.harkame.tp1.db.model.EventModel
-import fr.harkame.tp1.service.NotificationIntentService.Companion.ACTION_REPORT_SHORT
+import fr.harkame.tp1.service.notification.NotificationIntentService.Companion.ACTION_REPORT_SHORT
 
 class NotificationService : Service() {
+    companion object {
+        private const val TAG = "NotificationService"
+        private const val CHANNEL_ID = "notify_001"
+
+        private var NOTIFICATION_ID = 0
+    }
+
     private val DEFAULT_TIME_START_NOTIFICATION = 10L
 
-    var timer: Timer? = null
-    var timerTask: TimerTask? = null
-    var TAG = "Timers"
+    private lateinit var timer: Timer
+    private lateinit var timerTask: TimerTask
+    private lateinit var handler : Handler
 
     private lateinit var eventDBHelper: EventDBHelper
-    private var mNotificationManager: NotificationManagerCompat? = null
-
-    private val CHANNEL_ID = "notify_001"
-
-    companion object {
-        var NOTIFICATION_ID = 0
-    }
+    private lateinit var mNotificationManager: NotificationManagerCompat
 
     override fun onBind(arg0: Intent): IBinder? {
         return null
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        Log.e(TAG, "onStartCommand")
         super.onStartCommand(intent, flags, startId)
+
+        Log.d(TAG, "onStartCommand")
 
         startTimer()
 
@@ -46,7 +48,9 @@ class NotificationService : Service() {
     }
 
     override fun onCreate() {
-        Log.e(TAG, "onCreate")
+        super.onCreate()
+
+        Log.d(TAG, "onCreate")
 
         mNotificationManager = NotificationManagerCompat.from(applicationContext)
 
@@ -54,35 +58,38 @@ class NotificationService : Service() {
     }
 
     override fun onDestroy() {
-        Log.e(TAG, "onDestroy")
+        Log.d(TAG, "onDestroy")
+
         stoptimertask()
+
         super.onDestroy()
     }
 
-    val handler = Handler()
-
     fun startTimer() {
+        Log.d(TAG, "startTimer")
+
         timer = Timer()
 
         initializeTimerTask()
 
-        timer!!.schedule(
+        timer.schedule(
                 timerTask,
                 DEFAULT_TIME_START_NOTIFICATION,
                 DEFAULT_TIME_START_NOTIFICATION * 30000
         )
     }
 
-    fun stoptimertask() {
-        //stop the timer, if it's not already null
-        if (timer != null) {
-            timer!!.cancel()
-            timer = null
-        }
+    fun stoptimertask()
+    {
+        Log.d(TAG, "stoptimertask")
+
+        timer.cancel()
     }
 
     fun initializeTimerTask() {
+        Log.d(TAG, "initializeTimerTask")
 
+        handler = Handler()
         timerTask = object : TimerTask() {
             override fun run() {
                 handler.post{
@@ -93,12 +100,13 @@ class NotificationService : Service() {
     }
 
     fun sendNotifications() {
+        Log.d(TAG, "sendNotifications")
 
         val events = eventDBHelper.readAllEventsForToday()
 
         for (event in events)
         {
-            mNotificationManager!!.notify(NOTIFICATION_ID, createNotification(event))
+            mNotificationManager.notify(NOTIFICATION_ID, createNotification(event))
 
             NOTIFICATION_ID++
         }
@@ -106,6 +114,8 @@ class NotificationService : Service() {
 
     fun createNotification(event: EventModel) : Notification
     {
+        Log.d(TAG, "createNotification")
+
         var intent = Intent(this, HomeActivity::class.java)
 
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
@@ -159,7 +169,6 @@ class NotificationService : Service() {
                 .setContentTitle("Evenement Aujourd'hui : " + event.name)
                 .setContentText(event.description)
                 .setChannelId(CHANNEL_ID)
-                .setPriority(Notification.PRIORITY_MAX)
                 .addAction(dismissAction)
                 .addAction(reportShortAction)
                 .addAction(reportlongAction)
@@ -183,6 +192,5 @@ class NotificationService : Service() {
         }
 
         return buildedNotification.build()
-
     }
 }
