@@ -176,7 +176,7 @@ class MainActivity : WearableActivity(), SensorEventListener
                         data = java.lang.Float.toString(deltaZMax)
                     }
 
-                    resolveNode()
+                    resolveNode(data)
 
                     Log.d(TAG, "Message sended")
                 }
@@ -184,7 +184,7 @@ class MainActivity : WearableActivity(), SensorEventListener
         }
     }
 
-    private fun resolveNode() {
+    private fun resolveNode(data: String) {
         Log.d(TAG, "resolveNode")
 
         mGoogleApiClient = GoogleApiClient.Builder(this)
@@ -198,7 +198,7 @@ class MainActivity : WearableActivity(), SensorEventListener
                     override fun onResult(connectedNodes: NodeApi.GetConnectedNodesResult) {
                         for (connectedNode in connectedNodes.nodes) {
                             mNode = connectedNode
-                            sendMessage(WEAR_DATA_PATH, "")
+                            sendMessage(WEAR_DATA_PATH, data)
                         }
                     }
                 })
