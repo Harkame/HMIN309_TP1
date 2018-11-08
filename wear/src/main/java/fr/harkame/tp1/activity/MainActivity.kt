@@ -80,6 +80,8 @@ class MainActivity : WearableActivity(), SensorEventListener
 
                     speedTextView.text = "0.0"
 
+                    stoptimertask()
+
                     started = false
                 }
             }
@@ -89,14 +91,14 @@ class MainActivity : WearableActivity(), SensorEventListener
 
                     startbutton.text = getString(R.string.stop)
 
+                    startTimer()
+
                     started = true
                 }
             }
         }
 
         startService(Intent(this, MessageListenerService::class.java))
-
-        startTimer()
 
         setAmbientEnabled()
     }
@@ -161,24 +163,7 @@ class MainActivity : WearableActivity(), SensorEventListener
             override fun run()
             {
                 handler.post{
-                    var data = ""
-
-                    if (deltaX > deltaXMax) {
-                        deltaXMax = deltaX
-                        data = java.lang.Float.toString(deltaXMax)
-                    }
-                    if (deltaY > deltaYMax) {
-                        deltaYMax = deltaY
-                        data = java.lang.Float.toString(deltaYMax)
-                    }
-                    if (deltaZ > deltaZMax) {
-                        deltaZMax = deltaZ
-                        data = java.lang.Float.toString(deltaZMax)
-                    }
-
-                    resolveNode(data)
-
-                    Log.d(TAG, "Message sended")
+                    resolveNode(speedTextView.text.toString())
                 }
             }
         }
@@ -215,7 +200,7 @@ class MainActivity : WearableActivity(), SensorEventListener
                 .setResultCallback(object : ResultCallback<MessageApi.SendMessageResult> {
                     override fun onResult(sendMessageResult: MessageApi.SendMessageResult) {
                         if (sendMessageResult.status.isSuccess)
-                            Log.d(TAG, "Message sended")
+                            Log.d(TAG, "Message sended : " + message)
                         else
                             Log.e(TAG, "Message not sended")
                     }
