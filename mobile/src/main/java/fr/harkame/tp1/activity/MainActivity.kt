@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
 
                 supportFragmentManager
                         .beginTransaction()
-                        .replace(R.id.flContainer, fragment)
+                        .replace(R.id.fragment_container, fragment)
                         .commit()
 
                 return@OnNavigationItemSelectedListener true
@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
 
                 supportFragmentManager
                         .beginTransaction()
-                        .replace(R.id.flContainer, fragment)
+                        .replace(R.id.fragment_container, fragment)
                         .commit()
 
                 return@OnNavigationItemSelectedListener true
@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
 
                 supportFragmentManager
                         .beginTransaction()
-                        .replace(R.id.flContainer, fragment)
+                        .replace(R.id.fragment_container, fragment)
                         .commit()
 
                 return@OnNavigationItemSelectedListener true
@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
 
         supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.flContainer, HomeFragment())
+                .replace(R.id.fragment_container, HomeFragment())
                 .commit()
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
