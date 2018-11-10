@@ -1,30 +1,31 @@
-package fr.harkame.tp1.activity.creation
+package fr.harkame.tp1.fragment.creation
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import android.support.v4.app.Fragment
 import android.util.Log
 import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
 import fr.harkame.tp1.R
-import fr.harkame.tp1.activity.home.HomeActivity
 import fr.harkame.tp1.db.contract.EventType
 import fr.harkame.tp1.db.util.DateUtils
 import fr.harkame.tp1.db.helper.EventDBHelper
-import fr.harkame.tp1.db.model.EventModel
-import kotlinx.android.synthetic.main.activity_event_creation.*
 import org.joda.time.DateTime
 import java.util.*
+import android.view.ViewGroup
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.EditText
+import android.widget.Toast
+import fr.harkame.tp1.db.model.EventModel
 import org.joda.time.format.DateTimeFormat
 
-class EventCreationActivity : AppCompatActivity() {
+
+class EventCreationFragment : Fragment() {
 
     companion object {
-        private const val TAG = "HomeActivity"
+        private const val TAG = "EventCreationFragment"
     }
 
     private lateinit var eventDBHelper : EventDBHelper
@@ -36,20 +37,27 @@ class EventCreationActivity : AppCompatActivity() {
 
         Log.d(TAG, "onCreate")
 
-        setContentView(R.layout.activity_event_creation)
 
-        eventDBHelper = EventDBHelper(this)
+    }
 
-        val eventCreationDateButton = findViewById<Button>(R.id.eventCreationDate);
+    override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {
+        // Inflate the xml file for the fragment
+        return inflater.inflate(R.layout.fragment_event_creation, parent, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        eventDBHelper = EventDBHelper(this.context!!)
+
+        val eventCreationDateButton = view.findViewById<Button>(R.id.eventCreationDate)
 
         eventCreationDateButton.text = DateUtils.dateTimeToString(DateTime.now())
 
-        buttonType = findViewById(R.id.eventCreationType)
+        buttonType = view.findViewById(R.id.eventCreationType)
 
 
         buttonType.setOnClickListener {
 
-            val builder = AlertDialog.Builder(this)
+            val builder = AlertDialog.Builder(this.context!!)
             builder.setTitle("Types")
 
             builder.setItems(EventType.eventTypes) { dialog, which ->
@@ -62,7 +70,7 @@ class EventCreationActivity : AppCompatActivity() {
 
         eventCreationDateButton.setOnClickListener {
             val now = Calendar.getInstance()
-            val datePickerDialog = DatePickerDialog(this, DatePickerDialog.OnDateSetListener {_, year, month, dayOfMonth ->
+            val datePickerDialog = DatePickerDialog(this.context, DatePickerDialog.OnDateSetListener {_, year, month, dayOfMonth ->
                 eventCreationDateButton.text = "$dayOfMonth/$month/$year"
             },
                     now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH))
@@ -71,24 +79,30 @@ class EventCreationActivity : AppCompatActivity() {
             datePickerDialog.show()
         }
 
+        val eventCreationValidate = view.findViewById<Button>(R.id.eventCreationValidate)
+
         eventCreationValidate.setOnClickListener {
 
             var validEvent = true
 
-            val eventName = findViewById<EditText>(R.id.eventCreationName).text.toString()
+            var eventNameTextview = view.findViewById<EditText>(R.id.eventCreationName)
+
+            val eventName = eventNameTextview.text.toString()
 
             if(eventName.isEmpty()) {
-                Toast.makeText(applicationContext,
+                Toast.makeText(this.context,
                         "Titre invalide", Toast.LENGTH_LONG).show()
 
                 validEvent = false
             }
 
-            val eventDate = findViewById<Button>(R.id.eventCreationDate).text.toString()
+            val eventDate = view.findViewById<Button>(R.id.eventCreationDate).text.toString()
 
             val eventType = buttonType.text.toString()
 
-            val eventDescription = findViewById<EditText>(R.id.eventCreationDescription).text.toString()
+            var eventDescriptionTextView = view.findViewById<EditText>(R.id.eventCreationDescription)
+
+            val eventDescription = eventDescriptionTextView.text.toString()
 
             if(validEvent) {
 
@@ -97,10 +111,11 @@ class EventCreationActivity : AppCompatActivity() {
 
                 eventDBHelper.insertEvent(EventModel(eventName, dateTime, eventType, eventDescription, false))
 
-                val intent = Intent(this, HomeActivity::class.java).apply {
+                eventNameTextview.setText("")
+                eventDescriptionTextView.setText("")
 
-                }
-                startActivity(intent)
+                Toast.makeText(this.context,
+                        "Event created", Toast.LENGTH_LONG).show()
             }
         }
     }

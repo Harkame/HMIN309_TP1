@@ -11,7 +11,7 @@ import android.app.PendingIntent
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import fr.harkame.tp1.R
-import fr.harkame.tp1.activity.home.HomeActivity
+import fr.harkame.tp1.activity.MainActivity
 import fr.harkame.tp1.db.contract.EventType
 import fr.harkame.tp1.db.model.EventModel
 import fr.harkame.tp1.service.notification.NotificationIntentService.Companion.ACTION_REPORT_SHORT
@@ -116,7 +116,7 @@ class NotificationService : Service() {
     {
         Log.d(TAG, "createNotification")
 
-        var intent = Intent(this, HomeActivity::class.java)
+        var intent = Intent(this, MainActivity::class.java)
 
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
 

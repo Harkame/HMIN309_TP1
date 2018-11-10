@@ -14,7 +14,7 @@ import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.NodeApi
 import fr.harkame.tp1.R
-import fr.harkame.tp1.activity.home.HomeActivity
+import fr.harkame.tp1.activity.MainActivity
 import fr.harkame.tp1.db.contract.EventType
 
 
@@ -143,7 +143,7 @@ class NotificationIntentService : IntentService("NotificationIntentService")
     {
         Log.d(TAG, "createNotification")
 
-        var intent = Intent(this, HomeActivity::class.java)
+        var intent = Intent(this, MainActivity::class.java)
 
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
 
