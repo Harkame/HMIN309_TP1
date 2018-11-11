@@ -2,6 +2,7 @@ package fr.harkame.tp1.adapter
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
@@ -29,7 +30,7 @@ class HomeEventAdapter internal constructor(private val context: Context, privat
         return position.toLong()
     }
 
-    fun isChecked(position: Int): Boolean {
+    private fun isChecked(position: Int): Boolean {
         return list[position].notification
     }
 
@@ -62,14 +63,14 @@ class HomeEventAdapter internal constructor(private val context: Context, privat
             val newState = !list[position].notification
             list[position].notification = newState
 
-            var event = list[position]
+            var eventModel = list[position]
 
             var notifictionActivated = 0
 
-            if(event.notification)
+            if(eventModel.notification)
                 notifictionActivated = 1
 
-            eventDBHelper.updateNotification(event.id, notifictionActivated)
+            eventDBHelper.updateNotification(eventModel.id, notifictionActivated)
         }
 
         viewHolder.checkBox!!.setChecked(isChecked(position))

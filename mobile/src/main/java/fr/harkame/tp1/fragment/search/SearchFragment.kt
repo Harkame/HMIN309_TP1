@@ -1,17 +1,11 @@
 package fr.harkame.tp1.fragment.search
 
-import android.app.AlertDialog
-import android.app.DatePickerDialog
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.widget.Button
 import fr.harkame.tp1.R
-import fr.harkame.tp1.db.contract.EventType
-import fr.harkame.tp1.db.util.DateUtils
 import fr.harkame.tp1.db.helper.EventDBHelper
-import org.joda.time.DateTime
-import java.util.*
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
@@ -31,7 +25,6 @@ class SearchFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         Log.d(TAG, "onCreate")
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {
