@@ -8,23 +8,39 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="50sp"
+        android:layout_marginStart="50dp"
         android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="start">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title"
-            android:textSize="32sp"/>
+            android:textSize="32sp"
+            android:textColor="@color/colorAccent"/>
 
-        <EditText
-            android:id="@+id/eventCreationName"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/example_my_event"
-            android:singleLine="true"
-            android:textSize="22sp"/>
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/eventCreationName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/example_my_event"
+                android:singleLine="true"
+                android:textSize="22sp"/>
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/eventCreationNameError"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_error"
+                android:layout_gravity="end"
+                android:visibility="invisible"/>
+        </LinearLayout>
+
 
     </LinearLayout>
 
@@ -34,20 +50,24 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="150sp"
+        android:layout_marginTop="100sp"
+        android:layout_marginStart="50dp"
         android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="start">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/date"
-            android:textSize="22sp"/>
+            android:textSize="22sp"
+            android:textColor="@color/colorAccent"/>
 
         <Button
             android:id="@+id/eventCreationDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+
+
     </LinearLayout>
 
     <LinearLayout
@@ -55,24 +75,26 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="250sp"
+        android:layout_marginTop="200sp"
+        android:layout_marginStart="50dp"
         android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="start">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/type"
-            android:textSize="32sp"/>
+            android:textSize="32sp"
+            android:textColor="@color/colorAccent"/>
 
         <Button
             android:id="@+id/eventCreationType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/sport"
-            android:hint="@string/example_sport"
-            android:singleLine="true"
-            android:textSize="22sp"/>
+            android:textColor="@color/white"
+            android:background="@drawable/ripple_effect"
+            android:gravity="center_vertical|center_horizontal" />
     </LinearLayout>
 
     <LinearLayout
@@ -80,15 +102,17 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="350sp"
+        android:layout_marginTop="300sp"
+        android:layout_marginStart="50dp"
         android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="start">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/description"
-            android:textSize="32sp"/>
+            android:textSize="32sp"
+            android:textColor="@color/colorAccent"/>
 
         <EditText
             android:id="@+id/eventCreationDescription"
@@ -110,9 +134,11 @@
 
         <Button
             android:id="@+id/eventCreationValidate"
-            android:layout_width="100sp"
-            android:layout_height="100sp"
-            android:background="@drawable/ic_add_event"
+            android:layout_width="200sp"
+            android:layout_height="50sp"
+            android:text="@string/create"
+            android:textColor="@color/white"
+            android:background="@drawable/ripple_effect"
             android:gravity="center_vertical|center_horizontal" />
     </LinearLayout>
 </RelativeLayout>

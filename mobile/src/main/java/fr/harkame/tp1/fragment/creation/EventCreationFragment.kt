@@ -5,7 +5,9 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.widget.ImageViewCompat
 import android.util.Log
+import android.view.KeyEvent
 import android.widget.Button
 import fr.harkame.tp1.R
 import fr.harkame.tp1.db.contract.EventType
@@ -17,9 +19,16 @@ import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import fr.harkame.tp1.db.model.EventModel
 import org.joda.time.format.DateTimeFormat
+import android.view.KeyEvent.KEYCODE_ENTER
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.EditorInfo.IME_ACTION_NEXT
+import android.widget.TextView
+
+
 
 
 class EventCreationFragment : Fragment() {
@@ -36,17 +45,26 @@ class EventCreationFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         Log.d(TAG, "onCreate")
-
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the xml file for the fragment
         return inflater.inflate(R.layout.fragment_event_creation, parent, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         eventDBHelper = EventDBHelper(this.context!!)
+
+        val textView = view.findViewById<TextView>(R.id.eventCreationName)
+
+        textView.setOnEditorActionListener { v, actionId, _ ->
+            if(actionId == EditorInfo.IME_ACTION_DONE ||
+                    actionId == EditorInfo.IME_ACTION_NEXT){
+                view.findViewById<ImageView>(R.id.eventCreationNameError).visibility = View.INVISIBLE
+                false
+            } else {
+                true
+            }
+        }
 
         val eventCreationDateButton = view.findViewById<Button>(R.id.eventCreationDate)
 
@@ -54,11 +72,10 @@ class EventCreationFragment : Fragment() {
 
         buttonType = view.findViewById(R.id.eventCreationType)
 
-
         buttonType.setOnClickListener {
 
             val builder = AlertDialog.Builder(this.context!!)
-            builder.setTitle("Types")
+            builder.setTitle("Event type")
 
             builder.setItems(EventType.eventTypes) { dialog, which ->
                 buttonType.text = EventType.getTypeFromID(which)
@@ -85,13 +102,15 @@ class EventCreationFragment : Fragment() {
 
             var validEvent = true
 
-            var eventNameTextview = view.findViewById<EditText>(R.id.eventCreationName)
+            val eventNameTextview = view.findViewById<EditText>(R.id.eventCreationName)
 
             val eventName = eventNameTextview.text.toString()
 
             if(eventName.isEmpty()) {
                 Toast.makeText(this.context,
-                        "Titre invalide", Toast.LENGTH_LONG).show()
+                        "Invalid title", Toast.LENGTH_LONG).show()
+
+                view.findViewById<ImageView>(R.id.eventCreationNameError).visibility = View.VISIBLE
 
                 validEvent = false
             }
