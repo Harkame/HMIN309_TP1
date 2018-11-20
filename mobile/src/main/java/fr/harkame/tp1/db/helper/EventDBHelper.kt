@@ -66,7 +66,7 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
 
         var cursor: Cursor?
         try {
-            cursor = database.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " WHERE event_date > " + dateOfTheDay + " ORDER BY " + DBContract.EventEntry.COLUMN_EVENT_DATE + " ASC ", null)
+            cursor = database.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " WHERE event_date > " + dateOfTheDay + " ORDER BY " + DBContract.EventEntry.COLUMN_EVENT_DATE + " ASC", null)
         } catch (e: SQLiteException) {
             return ArrayList()
         }
@@ -87,6 +87,35 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
 
         try {
             cursor = database.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " WHERE " + DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION + " = 1 "+ " ORDER BY event_date ASC", null)
+        } catch (e: SQLiteException) {
+            return ArrayList()
+        }
+
+        return cursorToListFilterCurrentDay(cursor)
+    }
+
+    fun readAllEventsByName(eventName: CharSequence): ArrayList<EventModel> {
+        val database = writableDatabase
+
+        var cursor: Cursor?
+
+        try {
+            cursor = database.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " WHERE " + DBContract.EventEntry.COLUMN_EVENT_NAME + " LIKE  '" + eventName + "%'", null)
+        } catch (e: SQLiteException) {
+            return ArrayList()
+        }
+
+        return cursorToListFilterCurrentDay(cursor)
+    }
+
+    //TODO
+    fun readAllEventsByDate(): ArrayList<EventModel> {
+        val database = writableDatabase
+
+        var cursor: Cursor?
+
+        try {
+            cursor = database.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME, null)
         } catch (e: SQLiteException) {
             return ArrayList()
         }

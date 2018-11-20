@@ -2,10 +2,9 @@ package fr.harkame.tp1.adapter
 
 import android.app.Activity
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
+import android.widget.ArrayAdapter
 import fr.harkame.tp1.db.model.ViewHolder
 import android.widget.CheckBox
 import android.widget.TextView
@@ -13,8 +12,7 @@ import fr.harkame.tp1.R
 import fr.harkame.tp1.db.model.EventModel
 import fr.harkame.tp1.db.helper.EventDBHelper
 
-
-class HomeEventAdapter internal constructor(private val context: Context, private val list: List<EventModel>) : BaseAdapter() {
+class HomeEventAdapter internal constructor(private val mycontext: Context, private val list: List<EventModel>) : ArrayAdapter<EventModel>(mycontext,R.layout.event_row, list) {
 
     private lateinit var eventDBHelper: EventDBHelper
 
@@ -22,7 +20,7 @@ class HomeEventAdapter internal constructor(private val context: Context, privat
         return list.size
     }
 
-    override fun getItem(position: Int): Any {
+    override fun getItem(position: Int): EventModel {
         return list[position]
     }
 

@@ -16,18 +16,18 @@ class EventModel : Serializable
     constructor(name: String, date: DateTime, type: String, description: String, notification: Boolean)
     {
         this.name = name
-        this.date = date;
-        this.type = type;
-        this.description = description;
+        this.date = date
+        this.type = type
+        this.description = description
         this.notification = notification
     }
 
     constructor(id: Int, name: String, date: DateTime, type: String, description: String, notification: Boolean)
     {
-        this.id = id;
+        this.id = id
         this.name = name
-        this.date = date;
-        this.type = type;
+        this.date = date
+        this.type = type
         this.description = description;
         this.notification = notification
     }
