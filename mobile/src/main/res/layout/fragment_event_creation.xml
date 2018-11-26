@@ -40,10 +40,7 @@
                 android:layout_gravity="end"
                 android:visibility="invisible"/>
         </LinearLayout>
-
-
     </LinearLayout>
-
 
     <LinearLayout
         android:layout_width="fill_parent"
