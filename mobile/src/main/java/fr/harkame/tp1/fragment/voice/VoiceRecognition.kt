@@ -48,7 +48,6 @@ class VoiceRecognition: Fragment() {
 
         speakButton.setOnClickListener { speakButtonClicked() }
         recognizer = SpeechRecognizer.createSpeechRecognizer(activity)
-        //recognizer.setRecognitionListener(voiceListener())
 
         verifyRecognitionService()
 
@@ -88,7 +87,7 @@ class VoiceRecognition: Fragment() {
 
         mText.text = mAnswer
 
-        if(mAnswer != "création" || mAnswer!= "accueil"){
+        if(mAnswer == "création" || mAnswer == "accueil"){
 
             var fragment = Fragment()
             Log.d("mAnswer : ", mAnswer)
