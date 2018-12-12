@@ -10,4 +10,9 @@
         android:id="@+id/navigation_create"
         android:icon="@drawable/ic_add"
         android:title="@string/create"/>
+
+    <item
+        android:id="@+id/navigation_voice_recognition"
+        android:icon="@drawable/ic_navigation_record"
+        android:title="voice"/>
 </menu>

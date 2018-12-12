@@ -13,6 +13,7 @@ import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import fr.harkame.tp1.fragment.creation.EventCreationFragment
 import fr.harkame.tp1.fragment.home.HomeFragment
+import fr.harkame.tp1.fragment.voice.VoiceRecognition
 import fr.harkame.tp1.service.notification.NotificationService
 import fr.harkame.tp1.service.wear.WearDataService
 
@@ -43,6 +44,17 @@ class MainActivity : AppCompatActivity() {
             R.id.navigation_create -> {
 
                 fragment = EventCreationFragment()
+
+                supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .commit()
+
+                return@OnNavigationItemSelectedListener true
+            }
+
+            R.id.navigation_voice_recognition -> {
+                fragment = VoiceRecognition()
 
                 supportFragmentManager
                         .beginTransaction()
