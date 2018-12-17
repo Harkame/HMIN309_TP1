@@ -31,9 +31,10 @@ import android.widget.TextView
 
 
 
-class EventCreationFragment : Fragment() {
-
-    companion object {
+class EventCreationFragment : Fragment()
+{
+    companion object
+    {
         private const val TAG = "EventCreationFragment"
     }
 
@@ -88,9 +89,11 @@ class EventCreationFragment : Fragment() {
         eventCreationDateButton.setOnClickListener {
             val now = Calendar.getInstance()
             val datePickerDialog = DatePickerDialog(this.context, DatePickerDialog.OnDateSetListener {_, year, month, dayOfMonth ->
-                eventCreationDateButton.text = "$dayOfMonth/$month/$year"
+                val realMonth = month + 1
+
+                eventCreationDateButton.text = "$dayOfMonth/$realMonth/$year"
             },
-                    now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH))
+            now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH))
 
             datePickerDialog.datePicker.minDate = System.currentTimeMillis()
             datePickerDialog.show()
@@ -124,11 +127,10 @@ class EventCreationFragment : Fragment() {
             val eventDescription = eventDescriptionTextView.text.toString()
 
             if(validEvent) {
-
                 val formatter = DateTimeFormat.forPattern("dd/MM/yyyy")
                 val dateTime = formatter.parseDateTime(eventDate).withHourOfDay(23)
 
-                eventDBHelper.insertEvent(EventModel(eventName, dateTime, eventType, eventDescription, false))
+                eventDBHelper.insertEvent(EventModel(eventName, dateTime, DateUtils.dateTimeToString(dateTime), eventType, eventDescription, false))
 
                 eventNameTextview.setText("")
                 eventDescriptionTextView.setText("")

@@ -34,12 +34,13 @@ class HomeFragment : Fragment() {
         currentContext = context!!
     }
 
-    override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the xml file for the fragment
+    override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View?
+    {
         return inflater.inflate(R.layout.fragment_home, parent, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?)
+    {
         eventDBHelper = EventDBHelper(this.context!!)
 
         val events = eventDBHelper.readAllEvents()
@@ -51,23 +52,23 @@ class HomeFragment : Fragment() {
 
         val inputTextView = view.findViewById<TextView>(R.id.input_search)
 
-        inputTextView.addTextChangedListener(object : TextWatcher {
-
-            override fun onTextChanged(charSequence: CharSequence, arg1: Int, arg2: Int, arg3: Int) {
-
-                val events = eventDBHelper.readAllEventsByName(charSequence)
+        inputTextView.addTextChangedListener(object : TextWatcher
+        {
+            override fun onTextChanged(charSequence: CharSequence, arg1: Int, arg2: Int, arg3: Int)
+            {
+                val events = eventDBHelper.readAllEventsByNameOrByDate(charSequence)
 
                 homeEventAdapter = HomeEventAdapter(currentContext, events)
 
                 eventList.adapter = homeEventAdapter
             }
 
-            override fun beforeTextChanged(arg0: CharSequence, arg1: Int, arg2: Int,
-
-                                           arg3: Int) {
+            override fun beforeTextChanged(arg0: CharSequence, arg1: Int, arg2: Int, arg3 : Int)
+            {
             }
 
-            override fun afterTextChanged(arg0: Editable) {
+            override fun afterTextChanged(arg0: Editable)
+            {
             }
         })
     }

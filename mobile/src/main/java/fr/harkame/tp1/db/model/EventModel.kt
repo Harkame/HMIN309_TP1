@@ -9,24 +9,27 @@ class EventModel : Serializable
     var id: Int = 0
     var name: String = ""
     var date: DateTime = DateTime.now()
+    var dateText : String = ""
     var type: String = ""
     var description: String = ""
     var notification: Boolean = false
 
-    constructor(name: String, date: DateTime, type: String, description: String, notification: Boolean)
+    constructor(name : String, date : DateTime, dateText : String, type : String, description : String, notification : Boolean)
     {
         this.name = name
         this.date = date
+        this.dateText = dateText
         this.type = type
         this.description = description
         this.notification = notification
     }
 
-    constructor(id: Int, name: String, date: DateTime, type: String, description: String, notification: Boolean)
+    constructor(id : Int, name : String, date : DateTime, dateText : String, type: String, description: String, notification: Boolean)
     {
         this.id = id
         this.name = name
         this.date = date
+        this.dateText = dateText
         this.type = type
         this.description = description;
         this.notification = notification

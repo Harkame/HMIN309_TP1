@@ -16,28 +16,32 @@ class HomeEventAdapter internal constructor(private val mycontext: Context, priv
 
     private lateinit var eventDBHelper: EventDBHelper
 
-    override fun getCount(): Int {
+    override fun getCount(): Int
+    {
         return list.size
     }
 
-    override fun getItem(position: Int): EventModel {
+    override fun getItem(position: Int): EventModel
+    {
         return list[position]
     }
 
-    override fun getItemId(position: Int): Long {
+    override fun getItemId(position: Int): Long
+    {
         return position.toLong()
     }
 
-    private fun isChecked(position: Int): Boolean {
+    private fun isChecked(position: Int): Boolean
+    {
         return list[position].notification
     }
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View
+    {
         eventDBHelper = EventDBHelper(context)
 
         var rowView = convertView
 
-        // reuse views
         var viewHolder = ViewHolder()
         if (rowView == null) {
             val inflater = (context as Activity).layoutInflater
@@ -50,18 +54,18 @@ class HomeEventAdapter internal constructor(private val mycontext: Context, priv
             viewHolder = rowView.tag as ViewHolder
         }
 
-        viewHolder.checkBox!!.setChecked(!list[position].notification)
+        viewHolder.checkBox!!.isChecked = !list[position].notification
 
         val event = list[position]
-        viewHolder.text!!.setText(event.toString())
+        viewHolder.text!!.text = event.toString()
 
-        viewHolder.checkBox!!.setTag(position)
+        viewHolder.checkBox!!.tag = position
 
         viewHolder.checkBox!!.setOnClickListener {
             val newState = !list[position].notification
             list[position].notification = newState
 
-            var eventModel = list[position]
+            val eventModel = list[position]
 
             var notifictionActivated = 0
 
@@ -71,7 +75,7 @@ class HomeEventAdapter internal constructor(private val mycontext: Context, priv
             eventDBHelper.updateNotification(eventModel.id, notifictionActivated)
         }
 
-        viewHolder.checkBox!!.setChecked(isChecked(position))
+        viewHolder.checkBox!!.isChecked = isChecked(position)
 
         return rowView!!
     }
