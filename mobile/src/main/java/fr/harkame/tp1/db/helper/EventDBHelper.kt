@@ -67,6 +67,34 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         return true
     }
 
+    @Throws(SQLiteConstraintException::class)
+    fun updateEvent(event: EventModel): Boolean
+    {
+        removeOldEvents()
+
+        val database = writableDatabase
+
+        val values = ContentValues()
+        values.put(DBContract.EventEntry.COLUMN_EVENT_ID, event.id)
+        values.put(DBContract.EventEntry.COLUMN_EVENT_NAME, event.name)
+        values.put(DBContract.EventEntry.COLUMN_EVENT_DATE, event.date.millis)
+        values.put(DBContract.EventEntry.COLUMN_EVENT_DATE_TEXT, event.dateText)
+        //values.put(DBContract.EventEntry.COLUMN_EVENT_TYPE, EventType.getIDFromType(event.type))
+        values.put(DBContract.EventEntry.COLUMN_EVENT_DESCRIPTION, event.description)
+        //values.put(DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION, event.notification)
+
+        var i = database.update(DBContract.EventEntry.TABLE_NAME, values, DBContract.EventEntry.COLUMN_EVENT_ID + " = ?", Array(1) { event.id.toString() })
+
+        return true
+    }
+
+    fun deleteEvent(event : EventModel)
+    {
+        val database = writableDatabase
+
+        database.delete(DBContract.EventEntry.TABLE_NAME, DBContract.EventEntry.COLUMN_EVENT_ID + " = ?", Array(1) { event.id.toString() })
+    }
+
     fun readAllEvents(): ArrayList<EventModel>
     {
         removeOldEvents()

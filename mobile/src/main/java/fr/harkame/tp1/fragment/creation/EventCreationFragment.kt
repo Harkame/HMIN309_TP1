@@ -67,6 +67,7 @@ class EventCreationFragment : Fragment()
             }
         }
 
+
         val eventCreationDateButton = view.findViewById<Button>(R.id.eventCreationDate)
 
         eventCreationDateButton.text = DateUtils.dateTimeToString(DateTime.now())

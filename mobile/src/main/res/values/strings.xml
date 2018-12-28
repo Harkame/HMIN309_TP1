@@ -21,4 +21,6 @@
     <string name="example_sport">Example : Sport</string>
     <string name="create">create</string>
     <string name="search_event">Search event</string>
+    <string name="modify">modify</string>
+    <string name="delete">delete</string>
 </resources>

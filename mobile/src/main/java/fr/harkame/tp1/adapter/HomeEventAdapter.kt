@@ -11,10 +11,13 @@ import android.widget.TextView
 import fr.harkame.tp1.R
 import fr.harkame.tp1.db.model.EventModel
 import fr.harkame.tp1.db.helper.EventDBHelper
+import android.R.attr.fragment
+import fr.harkame.tp1.activity.MainActivity
 
-class HomeEventAdapter internal constructor(private val mycontext: Context, private val list: List<EventModel>) : ArrayAdapter<EventModel>(mycontext,R.layout.event_row, list) {
 
-    private lateinit var eventDBHelper: EventDBHelper
+class HomeEventAdapter internal constructor(private val mycontext: Context, private val list: List<EventModel>, private val activity : MainActivity) : ArrayAdapter<EventModel>(mycontext,R.layout.event_row, list) {
+
+    private var eventDBHelper = EventDBHelper(this.context)
 
     override fun getCount(): Int
     {
@@ -60,6 +63,12 @@ class HomeEventAdapter internal constructor(private val mycontext: Context, priv
         viewHolder.text!!.text = event.toString()
 
         viewHolder.checkBox!!.tag = position
+
+        viewHolder.text!!.setOnClickListener{
+            val eventModel = list[position]
+
+            activity.pushDetailsFragment(eventModel)
+        }
 
         viewHolder.checkBox!!.setOnClickListener {
             val newState = !list[position].notification

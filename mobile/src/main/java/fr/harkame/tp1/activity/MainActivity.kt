@@ -4,18 +4,20 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
-import fr.harkame.tp1.adapter.HomeEventAdapter
 import fr.harkame.tp1.db.helper.EventDBHelper
 import kotlinx.android.synthetic.main.activity_main.*
 import fr.harkame.tp1.R
 import android.content.Intent
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
+import fr.harkame.tp1.db.model.EventModel
 import fr.harkame.tp1.fragment.creation.EventCreationFragment
+import fr.harkame.tp1.fragment.details.EventDetailsFragment
 import fr.harkame.tp1.fragment.home.HomeFragment
 import fr.harkame.tp1.fragment.voice.VoiceRecognition
 import fr.harkame.tp1.service.notification.NotificationService
 import fr.harkame.tp1.service.wear.WearDataService
+
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -23,8 +25,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var eventDBHelper: EventDBHelper
-
-    private lateinit var homeEventAdapter: HomeEventAdapter
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         var fragment : Fragment
@@ -100,5 +100,21 @@ class MainActivity : AppCompatActivity() {
 
         menuInflater.inflate(R.menu.navigation, menu)
         return true
+    }
+
+    fun pushDetailsFragment(event : EventModel)
+    {
+        val fragment = EventDetailsFragment.newInstance(event)
+
+        supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit()
+    }
+
+    fun popFragment()
+    {
+        supportFragmentManager.popBackStack()
     }
 }

@@ -14,6 +14,7 @@ import android.widget.ListView
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.TextView
+import fr.harkame.tp1.activity.MainActivity
 
 class HomeFragment : Fragment() {
     companion object {
@@ -45,7 +46,7 @@ class HomeFragment : Fragment() {
 
         val events = eventDBHelper.readAllEvents()
 
-        homeEventAdapter = HomeEventAdapter(currentContext, events)
+        homeEventAdapter = HomeEventAdapter(currentContext, events, this.activity as MainActivity)
 
         val eventList = view.findViewById<ListView>(R.id.list_events)
         eventList.adapter = homeEventAdapter
@@ -58,7 +59,7 @@ class HomeFragment : Fragment() {
             {
                 val events = eventDBHelper.readAllEventsByNameOrByDate(charSequence)
 
-                homeEventAdapter = HomeEventAdapter(currentContext, events)
+                homeEventAdapter = HomeEventAdapter(currentContext, events, activity as MainActivity)
 
                 eventList.adapter = homeEventAdapter
             }

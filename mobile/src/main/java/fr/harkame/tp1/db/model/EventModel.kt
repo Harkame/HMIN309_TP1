@@ -43,6 +43,8 @@ class EventModel : Serializable
         eventToString.append(DateUtils.dateTimeToString(date))
         eventToString.append(" - ")
         eventToString.append(type)
+
+        if(!description.isEmpty())
         eventToString.append(" - ")
         eventToString.append(description)
 
