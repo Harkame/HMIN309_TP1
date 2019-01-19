@@ -26,11 +26,11 @@ class WearDataService : WearableListenerService() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
-
         Log.d(TAG, "onDestroy")
 
         googleApiClient.disconnect()
+
+        super.onDestroy()
     }
 
     override fun onMessageReceived(messageEvent: MessageEvent?) {

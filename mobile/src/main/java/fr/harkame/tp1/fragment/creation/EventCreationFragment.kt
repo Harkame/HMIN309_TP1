@@ -14,12 +14,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.*
+import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.common.api.ResultCallback
+import com.google.android.gms.wearable.NodeApi
+import com.google.android.gms.wearable.Wearable
 import fr.harkame.tp1.R
 import fr.harkame.tp1.db.contract.EventType
 import fr.harkame.tp1.db.helper.EventDBHelper
 import fr.harkame.tp1.db.model.Event
 import fr.harkame.tp1.db.util.DateUtils
 import fr.harkame.tp1.receiver.NotificationReceiver
+import fr.harkame.tp1.service.notification.NotificationAction
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import java.util.*

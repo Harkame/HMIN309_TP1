@@ -136,7 +136,7 @@ class NotificationAction : IntentService("NotificationAction") {
                 }
     }
 
-    fun createNotification(event: Event, notificationID: Int): Notification {
+    private fun createNotification(event: Event, notificationID: Int): Notification {
         Log.d(TAG, "createNotification")
 
         var intent = Intent(this, MainActivity::class.java)
@@ -146,7 +146,7 @@ class NotificationAction : IntentService("NotificationAction") {
         val dismissIntent = Intent(this, NotificationAction::class.java)
         dismissIntent.action = NotificationAction.ACTION_DISMISS
 
-        //dismissIntent.putExtra("event", event)
+        dismissIntent.putExtra("event", event)
         dismissIntent.putExtra("notification_id", notificationID)
 
         val dismissPendingIntent = PendingIntent.getService(this, 0, dismissIntent, 0)
@@ -160,7 +160,7 @@ class NotificationAction : IntentService("NotificationAction") {
         val reportShortIntent = Intent(this, NotificationAction::class.java)
         reportShortIntent.action = ACTION_REPORT_SHORT
 
-        //reportShortIntent.putExtra("event", event)
+        reportShortIntent.putExtra("event", event)
         reportShortIntent.putExtra("notification_id", notificationID)
 
         val reportShortPendingIntent = PendingIntent.getService(this, 0, reportShortIntent, 0)
@@ -174,7 +174,7 @@ class NotificationAction : IntentService("NotificationAction") {
         val reportLongIntent = Intent(this, NotificationAction::class.java)
         reportLongIntent.action = NotificationAction.ACTION_REPORT_LONG
 
-        //reportLongIntent.putExtra("event", event)
+        reportLongIntent.putExtra("event", event)
         reportLongIntent.putExtra("notification_id", notificationID)
 
         val reportLongPendingIntentService = PendingIntent.getService(this, 0, reportLongIntent, 0)
@@ -200,7 +200,7 @@ class NotificationAction : IntentService("NotificationAction") {
             val startSportActivityIntent = Intent(this, NotificationAction::class.java)
             startSportActivityIntent.action = NotificationAction.ACTION_START_SPORT_ACTIVITY
 
-            //startSportActivityIntent.putExtra("event", event)
+            startSportActivityIntent.putExtra("event", event)
             startSportActivityIntent.putExtra("notification_id", notificationID)
 
             val startSportActivityPendingIntentService = PendingIntent.getService(this, 0, startSportActivityIntent, 0)
