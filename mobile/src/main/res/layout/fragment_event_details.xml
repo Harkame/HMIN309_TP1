@@ -13,7 +13,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="50dp"
+            android:layout_marginStart="30dp"
             android:orientation="vertical"
             android:gravity="start">
 
@@ -52,30 +52,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginTop="100sp"
-            android:layout_marginStart="50dp"
-            android:orientation="vertical"
-            android:gravity="start">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/date"
-                android:textSize="22sp"
-                android:textColor="@color/colorAccent"/>
-
-            <Button
-                android:id="@+id/eventDetailsDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="200sp"
-            android:layout_marginStart="50dp"
+            android:layout_marginStart="30dp"
             android:orientation="vertical"
             android:gravity="start">
 
@@ -100,8 +77,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="300sp"
-            android:layout_marginStart="50dp"
+            android:layout_marginTop="200sp"
+            android:layout_marginStart="30dp"
             android:orientation="vertical"
             android:gravity="start">
 
@@ -125,7 +102,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="450sp"
+            android:layout_marginTop="300sp"
             android:orientation="horizontal"
             android:gravity="center">
 

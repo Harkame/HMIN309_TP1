@@ -1,139 +1,170 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="50dp"
-        android:orientation="vertical"
-        android:gravity="start">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title"
-            android:textSize="32sp"
-            android:textColor="@color/colorAccent"/>
+        android:orientation="vertical" >
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="30dp"
+            android:orientation="vertical"
+            android:gravity="start">
 
-            <EditText
-                android:id="@+id/eventCreationName"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="@string/example_my_event"
+                android:text="@string/title"
+                android:textSize="32sp"
+                android:textColor="@color/colorAccent"/>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/eventCreationName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/example_my_event"
+                    android:singleLine="true"
+                    android:textSize="22sp"/>
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/eventCreationNameError"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_error"
+                    android:layout_gravity="end"
+                    android:visibility="invisible"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="100sp"
+            android:layout_marginStart="30dp"
+            android:orientation="vertical"
+            android:gravity="start">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/date"
+                android:textSize="32sp"
+                android:textColor="@color/colorAccent"/>
+
+            <Button
+                android:id="@+id/eventCreationDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="200sp"
+            android:layout_marginStart="30dp"
+            android:orientation="vertical"
+            android:gravity="start">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time"
+                android:textSize="32sp"
+                android:textColor="@color/colorAccent"/>
+
+            <Button
+                android:id="@+id/eventCreationTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="300sp"
+            android:layout_marginStart="30dp"
+            android:orientation="vertical"
+            android:gravity="start">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/type"
+                android:textSize="32sp"
+                android:textColor="@color/colorAccent"/>
+
+            <Button
+                android:id="@+id/eventCreationType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sport"
+                android:textColor="@color/white"
+                android:background="@drawable/ripple_effect"
+                android:gravity="center_vertical|center_horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="400sp"
+            android:layout_marginStart="30dp"
+            android:orientation="vertical"
+            android:gravity="start">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/description"
+                android:textSize="32sp"
+                android:textColor="@color/colorAccent"/>
+
+            <EditText
+                android:id="@+id/eventCreationDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/example_training"
                 android:singleLine="true"
                 android:textSize="22sp"/>
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/eventCreationNameError"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/ic_error"
-                android:layout_gravity="end"
-                android:visibility="invisible"/>
         </LinearLayout>
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="100sp"
-        android:layout_marginStart="50dp"
-        android:orientation="vertical"
-        android:gravity="start">
-
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/date"
-            android:textSize="22sp"
-            android:textColor="@color/colorAccent"/>
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="500sp"
+            android:layout_marginStart="30dp"
+            android:orientation="vertical"
+            android:gravity="start">
 
-        <Button
-            android:id="@+id/eventCreationDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="200sp"
-        android:layout_marginStart="50dp"
-        android:orientation="vertical"
-        android:gravity="start">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/type"
-            android:textSize="32sp"
-            android:textColor="@color/colorAccent"/>
-
-        <Button
-            android:id="@+id/eventCreationType"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/sport"
-            android:textColor="@color/white"
-            android:background="@drawable/ripple_effect"
-            android:gravity="center_vertical|center_horizontal" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="300sp"
-        android:layout_marginStart="50dp"
-        android:orientation="vertical"
-        android:gravity="start">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/description"
-            android:textSize="32sp"
-            android:textColor="@color/colorAccent"/>
-
-        <EditText
-            android:id="@+id/eventCreationDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="@string/example_training"
-            android:singleLine="true"
-            android:textSize="22sp"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="450sp"
-        android:orientation="vertical"
-        android:gravity="center">
-
-        <Button
-            android:id="@+id/eventCreationValidate"
-            android:layout_width="200sp"
-            android:layout_height="50sp"
-            android:text="@string/create"
-            android:textColor="@color/white"
-            android:background="@drawable/ripple_effect"
-            android:gravity="center_vertical|center_horizontal" />
-    </LinearLayout>
-</RelativeLayout>
+            <Button
+                android:id="@+id/eventCreationValidate"
+                android:layout_width="wrap_content"
+                android:layout_height="50sp"
+                android:text="@string/create"
+                android:textColor="@color/white"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:background="@drawable/ripple_effect"
+                android:gravity="center_vertical|center_horizontal" />
+        </LinearLayout>
+    </RelativeLayout>
+</ScrollView>

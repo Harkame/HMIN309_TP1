@@ -1,46 +1,37 @@
 package fr.harkame.tp1.fragment.creation
 
-import android.app.AlertDialog
-import android.app.DatePickerDialog
+import android.annotation.SuppressLint
+import android.app.*
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.support.annotation.RequiresApi
 import android.support.v4.app.Fragment
-import android.support.v4.widget.ImageViewCompat
 import android.util.Log
-import android.view.KeyEvent
-import android.widget.Button
-import fr.harkame.tp1.R
-import fr.harkame.tp1.db.contract.EventType
-import fr.harkame.tp1.db.util.DateUtils
-import fr.harkame.tp1.db.helper.EventDBHelper
-import org.joda.time.DateTime
-import java.util.*
-import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Toast
-import fr.harkame.tp1.db.model.EventModel
-import org.joda.time.format.DateTimeFormat
-import android.view.KeyEvent.KEYCODE_ENTER
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.EditorInfo.IME_ACTION_NEXT
-import android.widget.TextView
+import android.widget.*
+import fr.harkame.tp1.R
+import fr.harkame.tp1.db.contract.EventType
+import fr.harkame.tp1.db.helper.EventDBHelper
+import fr.harkame.tp1.db.model.Event
+import fr.harkame.tp1.db.util.DateUtils
+import fr.harkame.tp1.receiver.NotificationReceiver
+import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
+import java.util.*
 
-
-
-
-class EventCreationFragment : Fragment()
-{
-    companion object
-    {
+class EventCreationFragment : Fragment() {
+    companion object {
         private const val TAG = "EventCreationFragment"
     }
 
-    private lateinit var eventDBHelper : EventDBHelper
+    private lateinit var eventDBHelper: EventDBHelper
 
-    private lateinit var buttonType : Button
+    private lateinit var buttonType: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,14 +43,18 @@ class EventCreationFragment : Fragment()
         return inflater.inflate(R.layout.fragment_event_creation, parent, false)
     }
 
+    @SuppressLint("SetTextI18n")
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        eventDBHelper = EventDBHelper(this.context!!)
+        eventDBHelper = EventDBHelper(context!!)
+
+        val currentDateTime = DateTime.now()
 
         val textView = view.findViewById<TextView>(R.id.eventCreationName)
 
-        textView.setOnEditorActionListener { v, actionId, _ ->
-            if(actionId == EditorInfo.IME_ACTION_DONE ||
-                    actionId == EditorInfo.IME_ACTION_NEXT){
+        textView.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE ||
+                    actionId == EditorInfo.IME_ACTION_NEXT) {
                 view.findViewById<ImageView>(R.id.eventCreationNameError).visibility = View.INVISIBLE
                 false
             } else {
@@ -67,19 +62,22 @@ class EventCreationFragment : Fragment()
             }
         }
 
-
         val eventCreationDateButton = view.findViewById<Button>(R.id.eventCreationDate)
 
-        eventCreationDateButton.text = DateUtils.dateTimeToString(DateTime.now())
+        val eventCreationTimeButton = view.findViewById<Button>(R.id.eventCreationTime)
+
+        eventCreationDateButton.text = DateUtils.dateTimeToString(currentDateTime)
+
+        eventCreationTimeButton.text = "${currentDateTime.hourOfDay}:${currentDateTime.minuteOfHour}"
 
         buttonType = view.findViewById(R.id.eventCreationType)
 
         buttonType.setOnClickListener {
 
-            val builder = AlertDialog.Builder(this.context!!)
+            val builder = AlertDialog.Builder(context)
             builder.setTitle("Event type")
 
-            builder.setItems(EventType.eventTypes) { dialog, which ->
+            builder.setItems(EventType.eventTypes) { _, which ->
                 buttonType.text = EventType.getTypeFromID(which)
             }
 
@@ -89,15 +87,25 @@ class EventCreationFragment : Fragment()
 
         eventCreationDateButton.setOnClickListener {
             val now = Calendar.getInstance()
-            val datePickerDialog = DatePickerDialog(this.context, DatePickerDialog.OnDateSetListener {_, year, month, dayOfMonth ->
+            val datePickerDialog = DatePickerDialog(this.context!!, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
                 val realMonth = month + 1
 
                 eventCreationDateButton.text = "$dayOfMonth/$realMonth/$year"
             },
-            now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH))
+                    now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH))
 
             datePickerDialog.datePicker.minDate = System.currentTimeMillis()
             datePickerDialog.show()
+        }
+
+        eventCreationTimeButton.setOnClickListener {
+            val timePickerDialog = TimePickerDialog(this.context, TimePickerDialog.OnTimeSetListener(function = { _, hourOfDay, minuteOfHour ->
+
+                eventCreationTimeButton.text = "$hourOfDay:$minuteOfHour"
+
+            }), currentDateTime.hourOfDay, currentDateTime.minuteOfHour, false)
+
+            timePickerDialog.show()
         }
 
         val eventCreationValidate = view.findViewById<Button>(R.id.eventCreationValidate)
@@ -106,11 +114,11 @@ class EventCreationFragment : Fragment()
 
             var validEvent = true
 
-            val eventNameTextview = view.findViewById<EditText>(R.id.eventCreationName)
+            val event = Event()
 
-            val eventName = eventNameTextview.text.toString()
+            event.name = view.findViewById<EditText>(R.id.eventCreationName).text.toString()
 
-            if(eventName.isEmpty()) {
+            if (event.name.isEmpty()) {
                 Toast.makeText(this.context,
                         "Invalid title", Toast.LENGTH_LONG).show()
 
@@ -121,22 +129,36 @@ class EventCreationFragment : Fragment()
 
             val eventDate = view.findViewById<Button>(R.id.eventCreationDate).text.toString()
 
-            val eventType = buttonType.text.toString()
+            val eventTime = view.findViewById<Button>(R.id.eventCreationTime).text.toString()
 
-            var eventDescriptionTextView = view.findViewById<EditText>(R.id.eventCreationDescription)
+            event.type = buttonType.text.toString()
 
-            val eventDescription = eventDescriptionTextView.text.toString()
+            event.description = view.findViewById<EditText>(R.id.eventCreationDescription).text.toString()
 
-            if(validEvent) {
-                val formatter = DateTimeFormat.forPattern("dd/MM/yyyy")
-                val dateTime = formatter.parseDateTime(eventDate).withHourOfDay(23)
+            if (validEvent) {
+                val formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm")
+                event.date = formatter.parseDateTime("$eventDate $eventTime")
 
-                eventDBHelper.insertEvent(EventModel(eventName, dateTime, DateUtils.dateTimeToString(dateTime), eventType, eventDescription, false))
+                event.dateText = "$eventDate $eventTime"
 
-                eventNameTextview.setText("")
-                eventDescriptionTextView.setText("")
+                event.notification = true
 
-                Toast.makeText(this.context,
+                eventDBHelper.insertEvent(event)
+
+                val notifyIntent = Intent(
+                        this.activity!!.baseContext
+                        , NotificationReceiver::class.java).apply {
+
+                    putExtra("event", event)
+                }
+
+                val pendingIntent = PendingIntent.getBroadcast(context, UUID.randomUUID().hashCode(), notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+                val alarmManager = context!!.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, event.date.millis, pendingIntent)
+
+                Toast.makeText(context,
                         "Event created", Toast.LENGTH_LONG).show()
             }
         }

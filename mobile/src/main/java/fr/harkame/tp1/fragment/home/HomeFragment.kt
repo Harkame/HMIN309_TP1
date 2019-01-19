@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.ListView
 import android.text.Editable
 import android.text.TextWatcher
+import android.widget.SearchView
 import android.widget.TextView
 import fr.harkame.tp1.activity.MainActivity
 
@@ -51,9 +52,10 @@ class HomeFragment : Fragment() {
         val eventList = view.findViewById<ListView>(R.id.list_events)
         eventList.adapter = homeEventAdapter
 
-        val inputTextView = view.findViewById<TextView>(R.id.input_search)
+        val inputSearchView = view.findViewById<SearchView>(R.id.input_search)
 
-        inputTextView.addTextChangedListener(object : TextWatcher
+        /*
+        inputSearchView.addTextChangedListener(object : TextWatcher
         {
             override fun onTextChanged(charSequence: CharSequence, arg1: Int, arg2: Int, arg3: Int)
             {
@@ -70,6 +72,24 @@ class HomeFragment : Fragment() {
 
             override fun afterTextChanged(arg0: Editable)
             {
+            }
+        })
+        */
+
+        inputSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+
+                val events = eventDBHelper.readAllEventsByNameOrByDate(newText)
+
+                homeEventAdapter = HomeEventAdapter(currentContext, events, activity as MainActivity)
+
+                eventList.adapter = homeEventAdapter
+                return true
             }
         })
     }

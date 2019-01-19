@@ -13,6 +13,7 @@
     <string name="my_event">My event</string>
     <string name="sport">Sport</string>
     <string name="date">Date</string>
+    <string name="time">Time</string>
     <string name="example_my_event">Example : Mon event</string>
     <string name="description">Description</string>
     <string name="channel_name">\"EventNotification</string>

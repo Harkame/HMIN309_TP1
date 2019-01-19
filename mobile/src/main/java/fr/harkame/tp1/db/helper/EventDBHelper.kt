@@ -9,13 +9,13 @@ import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
 import fr.harkame.tp1.db.contract.DBContract
 import fr.harkame.tp1.db.contract.EventType
-import fr.harkame.tp1.db.model.EventModel
+import fr.harkame.tp1.db.model.Event
 import org.joda.time.DateTime
 import java.util.*
+import kotlin.collections.ArrayList
 
 class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
-    companion object
-    {
+    companion object {
         private const val DATABASE_VERSION = 1
         private const val DATABASE_NAME = "event.db"
 
@@ -23,8 +23,8 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
                 "CREATE TABLE " + DBContract.EventEntry.TABLE_NAME + " (" +
                         DBContract.EventEntry.COLUMN_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                         DBContract.EventEntry.COLUMN_EVENT_NAME + " TEXT," +
-                        DBContract.EventEntry.COLUMN_EVENT_DATE + " INTEGER ," +
-                        DBContract.EventEntry.COLUMN_EVENT_DATE_TEXT + " TEXT ," +
+                        DBContract.EventEntry.COLUMN_EVENT_DATE_TIME + " INTEGER ," +
+                        DBContract.EventEntry.COLUMN_EVENT_DATE_TIME_TEXT + " TEXT ," +
                         DBContract.EventEntry.COLUMN_EVENT_TYPE + " INTEGER," +
                         DBContract.EventEntry.COLUMN_EVENT_DESCRIPTION + " NUMBER," +
                         DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION + " INTEGER)"
@@ -32,44 +32,41 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         private const val SQL_DELETE_TABLE = "DROP TABLE IF EXISTS " + DBContract.EventEntry.TABLE_NAME
     }
 
-    override fun onCreate(database: SQLiteDatabase)
-    {
+    override fun onCreate(database: SQLiteDatabase) {
         database.execSQL(SQL_CREATE_TABLE)
     }
 
-    override fun onUpgrade(database: SQLiteDatabase, oldVersion: Int, newVersion: Int)
-    {
+    override fun onUpgrade(database: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         onCreate(database)
     }
 
-    override fun onDowngrade(database: SQLiteDatabase, oldVersion: Int, newVersion: Int)
-    {
+    override fun onDowngrade(database: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         onUpgrade(database, oldVersion, newVersion)
     }
 
     @Throws(SQLiteConstraintException::class)
-    fun insertEvent(event: EventModel): Boolean
-    {
+    fun insertEvent(event: Event): Boolean {
         removeOldEvents()
 
         val database = writableDatabase
 
         val values = ContentValues()
         values.put(DBContract.EventEntry.COLUMN_EVENT_NAME, event.name)
-        values.put(DBContract.EventEntry.COLUMN_EVENT_DATE, event.date.millis)
-        values.put(DBContract.EventEntry.COLUMN_EVENT_DATE_TEXT, event.dateText)
+        values.put(DBContract.EventEntry.COLUMN_EVENT_DATE_TIME, event.date.millis)
+        values.put(DBContract.EventEntry.COLUMN_EVENT_DATE_TIME_TEXT, event.dateText)
         values.put(DBContract.EventEntry.COLUMN_EVENT_TYPE, EventType.getIDFromType(event.type))
         values.put(DBContract.EventEntry.COLUMN_EVENT_DESCRIPTION, event.description)
         values.put(DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION, event.notification)
 
         database.insert(DBContract.EventEntry.TABLE_NAME, null, values)
 
+        val i = readAllEvents()
+
         return true
     }
 
     @Throws(SQLiteConstraintException::class)
-    fun updateEvent(event: EventModel): Boolean
-    {
+    fun updateEvent(event: Event): Boolean {
         removeOldEvents()
 
         val database = writableDatabase
@@ -77,38 +74,32 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         val values = ContentValues()
         values.put(DBContract.EventEntry.COLUMN_EVENT_ID, event.id)
         values.put(DBContract.EventEntry.COLUMN_EVENT_NAME, event.name)
-        values.put(DBContract.EventEntry.COLUMN_EVENT_DATE, event.date.millis)
-        values.put(DBContract.EventEntry.COLUMN_EVENT_DATE_TEXT, event.dateText)
-        //values.put(DBContract.EventEntry.COLUMN_EVENT_TYPE, EventType.getIDFromType(event.type))
+        values.put(DBContract.EventEntry.COLUMN_EVENT_DATE_TIME, event.date.millis)
+        values.put(DBContract.EventEntry.COLUMN_EVENT_DATE_TIME_TEXT, event.dateText)
+        values.put(DBContract.EventEntry.COLUMN_EVENT_TYPE, EventType.getIDFromType(event.type))
         values.put(DBContract.EventEntry.COLUMN_EVENT_DESCRIPTION, event.description)
-        //values.put(DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION, event.notification)
+        values.put(DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION, event.notification)
 
-        var i = database.update(DBContract.EventEntry.TABLE_NAME, values, DBContract.EventEntry.COLUMN_EVENT_ID + " = ?", Array(1) { event.id.toString() })
+        database.update(DBContract.EventEntry.TABLE_NAME, values, DBContract.EventEntry.COLUMN_EVENT_ID + " = ?", Array(1) { event.id.toString() })
 
         return true
     }
 
-    fun deleteEvent(event : EventModel)
-    {
+    fun deleteEvent(event: Event) {
         val database = writableDatabase
 
         database.delete(DBContract.EventEntry.TABLE_NAME, DBContract.EventEntry.COLUMN_EVENT_ID + " = ?", Array(1) { event.id.toString() })
     }
 
-    fun readAllEvents(): ArrayList<EventModel>
-    {
+    fun readAllEvents(): ArrayList<Event> {
         removeOldEvents()
 
         val database = writableDatabase
 
-        val dateOfTheDay = DateTime.now().withHourOfDay(0).millis
-
         val cursor: Cursor?
-        try
-        {
-            cursor = database.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " WHERE event_date > " + dateOfTheDay + " ORDER BY " + DBContract.EventEntry.COLUMN_EVENT_DATE + " ASC", null)
-        } catch (sqliteException : SQLiteException)
-        {
+        try {
+            cursor = database.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " ORDER BY " + DBContract.EventEntry.COLUMN_EVENT_DATE_TIME + " ASC", null)
+        } catch (sqliteException: SQLiteException) {
             sqliteException.printStackTrace();
             return ArrayList()
         }
@@ -116,15 +107,42 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         return cursorToList(cursor)
     }
 
-    fun updateNotification(eventId: Int, notification: Int)
-    {
+    fun readAllNowEvents(): ArrayList<Event> {
+        removeOldEvents()
+
+        val database = writableDatabase
+
+        val cursor: Cursor?
+        try {
+            cursor = database.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " ORDER BY " + DBContract.EventEntry.COLUMN_EVENT_DATE_TIME + " ASC", null)
+        } catch (sqliteException: SQLiteException) {
+            sqliteException.printStackTrace();
+            return ArrayList()
+        }
+
+        val events = cursorToList(cursor)
+
+        val currentEvents = ArrayList<Event>()
+
+        val currentDateTime = DateTime.now()
+
+        for(event in events)
+            if(event.date.year() == currentDateTime.year() &&
+                    event.date.monthOfYear() == currentDateTime.monthOfYear() &&
+                    event.date.dayOfYear() == currentDateTime.dayOfYear() &&
+                    event.date.hourOfDay == currentDateTime.hourOfDay)
+            currentEvents.add(event)
+
+        return currentEvents
+    }
+
+    fun updateNotification(eventId: Int, notification: Int) {
         val database = writableDatabase
 
         database.execSQL("UPDATE " + DBContract.EventEntry.TABLE_NAME + " SET " + DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION + " = " + notification + " WHERE " + DBContract.EventEntry.COLUMN_EVENT_ID + " = " + eventId)
     }
 
-    fun readAllEventsForToday(): ArrayList<EventModel>
-    {
+    fun readAllEventsForToday(): ArrayList<Event> {
         removeOldEvents()
 
         val database = writableDatabase
@@ -132,7 +150,7 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         val cursor: Cursor?
 
         try {
-            cursor = database.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " WHERE " + DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION + " = 1 "+ " ORDER BY event_date ASC", null)
+            cursor = database.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " WHERE " + DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION + " = 1 " + " ORDER BY event_date ASC", null)
         } catch (e: SQLiteException) {
             return ArrayList()
         }
@@ -140,16 +158,14 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         return cursorToList(cursor)
     }
 
-    fun readAllEventsByNameOrByDate(typedText: CharSequence): ArrayList<EventModel> {
+    fun readAllEventsByNameOrByDate(typedText: CharSequence): ArrayList<Event> {
         val database = writableDatabase
 
         val cursor: Cursor?
 
-        try
-        {
-            cursor = database.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " WHERE " + DBContract.EventEntry.COLUMN_EVENT_NAME + " LIKE  '" + typedText + "%' OR " + DBContract.EventEntry.COLUMN_EVENT_DATE_TEXT + " LIKE  '" + typedText + "%'", null)
-        } catch (sqliteException: SQLiteException)
-        {
+        try {
+            cursor = database.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " WHERE " + DBContract.EventEntry.COLUMN_EVENT_NAME + " LIKE  '" + typedText + "%' OR " + DBContract.EventEntry.COLUMN_EVENT_DATE_TIME_TEXT + " LIKE  '" + typedText + "%'", null)
+        } catch (sqliteException: SQLiteException) {
             sqliteException.printStackTrace();
             return ArrayList()
         }
@@ -157,35 +173,23 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         return cursorToList(cursor)
     }
 
-    private fun cursorToList(cursor: Cursor) : ArrayList<EventModel>{
-        var eventId: Int
-        var eventName: String
-        var eventDate: Long
-        var eventDateText : String
-        var eventType: String
-        var eventDescription: String
-        var eventNotification: Boolean
-        val events = ArrayList<EventModel>()
-
-        val dateOfTheDay = DateTime.now().withHourOfDay(0).millis
+    private fun cursorToList(cursor: Cursor): ArrayList<Event> {
+        val events = ArrayList<Event>()
 
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast) {
-                eventId = cursor.getInt(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_ID))
-                eventName = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_NAME))
+                val event = Event()
 
-                eventDate = cursor.getLong(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_DATE))
+                event.id = cursor.getInt(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_ID))
+                event.name = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_NAME))
+                event.date = DateTime(cursor.getLong(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_DATE_TIME)))
+                event.dateText = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_DATE_TIME_TEXT))
+                event.type = EventType.getTypeFromID(cursor.getInt(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_TYPE)))
+                event.description = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_DESCRIPTION))
+                event.notification = cursor.getInt(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION)) == 1
 
-                eventDateText = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_DATE_TEXT))
+                events.add(event)
 
-                if(eventDate > dateOfTheDay) {
-                    eventType = EventType.getTypeFromID(cursor.getInt(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_TYPE)))
-                    eventDescription = cursor.getString(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_DESCRIPTION))
-
-                    eventNotification = cursor.getInt(cursor.getColumnIndex(DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION)) == 1
-
-                    events.add(EventModel(eventId, eventName, DateTime(eventDate), eventDateText, eventType, eventDescription, eventNotification))
-                }
                 cursor.moveToNext()
             }
         }
@@ -196,11 +200,12 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
     {
         val database = writableDatabase
 
-        database.rawQuery("DELETE FROM " + DBContract.EventEntry.TABLE_NAME + " WHERE " + DBContract.EventEntry.COLUMN_EVENT_NAME + " < " + DateTime.now().millis, null).close()
+        val i = database.delete(DBContract.EventEntry.TABLE_NAME, DBContract.EventEntry.COLUMN_EVENT_DATE_TIME + "<?",  arrayOf((DateTime.now().millis - 60000).toString()))
+
+        //database.rawQuery("DELETE FROM " + DBContract.EventEntry.TABLE_NAME + " WHERE " + DBContract.EventEntry.COLUMN_EVENT_DATE_TIME + " < " + DateTime.now().millis, null).close()
     }
 
-    private fun resetDatabase()
-    {
+    private fun resetDatabase() {
         val database = writableDatabase
 
         database.execSQL(SQL_DELETE_TABLE)

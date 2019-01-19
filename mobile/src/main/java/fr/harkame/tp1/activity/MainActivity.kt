@@ -1,22 +1,21 @@
 package fr.harkame.tp1.activity
 
+import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
+import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
-import fr.harkame.tp1.db.helper.EventDBHelper
-import kotlinx.android.synthetic.main.activity_main.*
 import fr.harkame.tp1.R
-import android.content.Intent
-import android.support.design.widget.BottomNavigationView
-import android.support.v4.app.Fragment
-import fr.harkame.tp1.db.model.EventModel
+import fr.harkame.tp1.db.helper.EventDBHelper
+import fr.harkame.tp1.db.model.Event
 import fr.harkame.tp1.fragment.creation.EventCreationFragment
 import fr.harkame.tp1.fragment.details.EventDetailsFragment
 import fr.harkame.tp1.fragment.home.HomeFragment
 import fr.harkame.tp1.fragment.voice.VoiceRecognition
-import fr.harkame.tp1.service.notification.NotificationService
 import fr.harkame.tp1.service.wear.WearDataService
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -27,7 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var eventDBHelper: EventDBHelper
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        var fragment : Fragment
+        var fragment: Fragment
 
         when (item.itemId) {
             R.id.navigation_home -> {
@@ -68,14 +67,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
         Log.d(TAG, "onCreate")
 
-        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         eventDBHelper = EventDBHelper(this)
-
-        startService(Intent(this, NotificationService::class.java))
 
         startService(Intent(this, WearDataService::class.java))
 
@@ -90,8 +88,6 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
-        stopService(Intent(this, NotificationService::class.java))
-
         stopService(Intent(this, WearDataService::class.java))
     }
 
@@ -102,8 +98,7 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    fun pushDetailsFragment(event : EventModel)
-    {
+    fun pushDetailsFragment(event: Event) {
         val fragment = EventDetailsFragment.newInstance(event)
 
         supportFragmentManager
@@ -113,8 +108,7 @@ class MainActivity : AppCompatActivity() {
                 .commit()
     }
 
-    fun popFragment()
-    {
+    fun popFragment() {
         supportFragmentManager.popBackStack()
     }
 }

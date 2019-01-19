@@ -1,4 +1,4 @@
-package fr.harkame.tp1.db.model
+package fr.harkame.tp1.fragment.home
 
 import android.widget.CheckBox
 import android.widget.TextView

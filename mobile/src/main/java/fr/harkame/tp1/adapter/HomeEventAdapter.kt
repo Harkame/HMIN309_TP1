@@ -5,17 +5,16 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import fr.harkame.tp1.db.model.ViewHolder
+import fr.harkame.tp1.fragment.home.ViewHolder
 import android.widget.CheckBox
 import android.widget.TextView
 import fr.harkame.tp1.R
-import fr.harkame.tp1.db.model.EventModel
+import fr.harkame.tp1.db.model.Event
 import fr.harkame.tp1.db.helper.EventDBHelper
-import android.R.attr.fragment
 import fr.harkame.tp1.activity.MainActivity
 
 
-class HomeEventAdapter internal constructor(private val mycontext: Context, private val list: List<EventModel>, private val activity : MainActivity) : ArrayAdapter<EventModel>(mycontext,R.layout.event_row, list) {
+class HomeEventAdapter internal constructor(private val mycontext: Context, private val list: List<Event>, private val activity : MainActivity) : ArrayAdapter<Event>(mycontext,R.layout.event_row, list) {
 
     private var eventDBHelper = EventDBHelper(this.context)
 
@@ -24,7 +23,7 @@ class HomeEventAdapter internal constructor(private val mycontext: Context, priv
         return list.size
     }
 
-    override fun getItem(position: Int): EventModel
+    override fun getItem(position: Int): Event
     {
         return list[position]
     }

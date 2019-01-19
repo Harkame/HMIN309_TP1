@@ -17,10 +17,9 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
-import fr.harkame.tp1.db.model.EventModel
+import fr.harkame.tp1.db.model.Event
 import org.joda.time.format.DateTimeFormat
 import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import fr.harkame.tp1.activity.MainActivity
 import kotlinx.android.synthetic.main.fragment_event_details.*
 
@@ -31,7 +30,7 @@ class EventDetailsFragment  : Fragment()
     {
         private const val TAG = "EventDetailsFragment"
 
-        fun newInstance(event : EventModel): EventDetailsFragment {
+        fun newInstance(event : Event): EventDetailsFragment {
             val fragment = EventDetailsFragment()
             val args = Bundle()
             args.putSerializable("event", event)
@@ -44,12 +43,12 @@ class EventDetailsFragment  : Fragment()
 
     private lateinit var buttonType : Button
 
-    private lateinit var event : EventModel
+    private lateinit var event : Event
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        event = this.arguments!!["event"] as EventModel
+        event = this.arguments!!["event"] as Event
 
         Log.d(TAG, "onCreate")
     }
@@ -76,10 +75,6 @@ class EventDetailsFragment  : Fragment()
             }
         }
 
-        val eventDetailsDateButton = view.findViewById<Button>(R.id.eventDetailsDate)
-
-        eventDetailsDateButton.text = event.dateText
-
         buttonType = view.findViewById(R.id.eventDetailsType)
 
         buttonType.text = event.type
@@ -101,19 +96,6 @@ class EventDetailsFragment  : Fragment()
 
         eventDetailsDescriptionEditText.text = Editable.Factory.getInstance().newEditable(event.description)
 
-        eventDetailsDateButton.setOnClickListener {
-            val now = Calendar.getInstance()
-            val datePickerDialog = DatePickerDialog(this.context, DatePickerDialog.OnDateSetListener {_, year, month, dayOfMonth ->
-                val realMonth = month + 1
-
-                eventDetailsDateButton.text = "$dayOfMonth/$realMonth/$year"
-            },
-                    now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH))
-
-            datePickerDialog.datePicker.minDate = System.currentTimeMillis()
-            datePickerDialog.show()
-        }
-
         val eventDetailsModify = view.findViewById<Button>(R.id.eventDetailsModify)
 
         eventDetailsModify.setOnClickListener {
@@ -129,17 +111,11 @@ class EventDetailsFragment  : Fragment()
                 validEvent = false
             }
 
-            val eventDate = view.findViewById<Button>(R.id.eventDetailsDate).text.toString()
 
             if (validEvent) {
-                val formatter = DateTimeFormat.forPattern("dd/MM/yyyy")
-                val dateTime = formatter.parseDateTime(eventDate).withHourOfDay(23)
-
                 event.name = eventDetailsNameEditText.text.toString()
                 event.type = eventDetailsType.text.toString()
                 event.description = eventDetailsDescriptionEditText.text.toString()
-                event.date = dateTime
-                event.dateText = eventDate
 
                 eventDBHelper.updateEvent(event)
 

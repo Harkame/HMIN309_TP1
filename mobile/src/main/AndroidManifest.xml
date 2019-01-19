@@ -3,6 +3,7 @@
     package="fr.harkame.tp1" >
 
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
@@ -29,10 +30,7 @@
         </activity>
 
         <service
-            android:name=".service.notification.NotificationService"
-            android:exported="false" />
-        <service
-            android:name=".service.notification.NotificationIntentService"
+            android:name=".service.notification.NotificationAction"
             android:exported="false" />
 
         <service
@@ -46,6 +44,14 @@
             </intent-filter>
         </service>
 
+        <receiver
+            android:name=".receiver.NotificationReceiver"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="com.pycitup.BroadcastReceiver" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
