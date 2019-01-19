@@ -17,6 +17,7 @@ import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
 import fr.harkame.tp1.R
 import fr.harkame.tp1.service.MessageListenerService
+import java.lang.Float.toString
 import java.util.*
 
 class MainActivity : WearableActivity(), SensorEventListener {
@@ -110,22 +111,18 @@ class MainActivity : WearableActivity(), SensorEventListener {
 
     }
 
-    private fun displayCurrentValues() {
-
-    }
-
-    fun displayMaxValues() {
+    private fun displayMaxValues() {
         if (deltaX > deltaXMax) {
             deltaXMax = deltaX
-            speedTextView.text = java.lang.Float.toString(deltaXMax)
+            speedTextView.text = toString(deltaXMax)
         }
         if (deltaY > deltaYMax) {
             deltaYMax = deltaY
-            speedTextView.text = java.lang.Float.toString(deltaYMax)
+            speedTextView.text = toString(deltaYMax)
         }
         if (deltaZ > deltaZMax) {
             deltaZMax = deltaZ
-            speedTextView.text = java.lang.Float.toString(deltaZMax)
+            speedTextView.text = toString(deltaZMax)
         }
     }
 
