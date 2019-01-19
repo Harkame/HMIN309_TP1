@@ -20,6 +20,8 @@ class MessageListenerService : WearableListenerService() {
     override fun onCreate() {
         super.onCreate()
 
+        Log.d(TAG, "onCreate")
+
         googleApiClient = GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .build()
