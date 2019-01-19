@@ -179,14 +179,12 @@ class MainActivity : WearableActivity(), SensorEventListener
         mGoogleApiClient.connect()
 
         Wearable.NodeApi.getConnectedNodes(mGoogleApiClient)
-                .setResultCallback(object : ResultCallback<NodeApi.GetConnectedNodesResult> {
-                    override fun onResult(connectedNodes: NodeApi.GetConnectedNodesResult) {
-                        for (connectedNode in connectedNodes.nodes) {
-                            mNode = connectedNode
-                            sendMessage(WEAR_DATA_PATH, data)
-                        }
+                .setResultCallback { connectedNodes ->
+                    for (connectedNode in connectedNodes.nodes) {
+                        mNode = connectedNode
+                        sendMessage(WEAR_DATA_PATH, data)
                     }
-                })
+                }
     }
 
 
