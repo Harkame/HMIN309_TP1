@@ -13,12 +13,11 @@ import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.common.api.ResultCallback
-import com.google.android.gms.wearable.MessageApi
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
 import fr.harkame.tp1.R
 import fr.harkame.tp1.service.MessageListenerService
+import java.lang.Float.toString
 import java.util.*
 
 class MainActivity : WearableActivity(), SensorEventListener {
@@ -112,29 +111,25 @@ class MainActivity : WearableActivity(), SensorEventListener {
 
     }
 
-    fun displayCurrentValues() {
-
-    }
-
-    fun displayMaxValues() {
+    private fun displayMaxValues() {
         if (deltaX > deltaXMax) {
             deltaXMax = deltaX
-            speedTextView.text = java.lang.Float.toString(deltaXMax)
+            speedTextView.text = toString(deltaXMax)
         }
         if (deltaY > deltaYMax) {
             deltaYMax = deltaY
-            speedTextView.text = java.lang.Float.toString(deltaYMax)
+            speedTextView.text = toString(deltaYMax)
         }
         if (deltaZ > deltaZMax) {
             deltaZMax = deltaZ
-            speedTextView.text = java.lang.Float.toString(deltaZMax)
+            speedTextView.text = toString(deltaZMax)
         }
     }
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
     }
 
-    fun startTimer() {
+    private fun startTimer() {
         timer = Timer()
 
         initializeTimerTask()
@@ -146,7 +141,7 @@ class MainActivity : WearableActivity(), SensorEventListener {
         )
     }
 
-    fun stoptimertask() {
+    private fun stoptimertask() {
         timer.cancel()
     }
 
@@ -180,7 +175,6 @@ class MainActivity : WearableActivity(), SensorEventListener {
                 }
     }
 
-
     private fun sendMessage(subject: String, message: String) {
         Log.d(TAG, "sendMessage")
 
@@ -188,13 +182,11 @@ class MainActivity : WearableActivity(), SensorEventListener {
                 mNode.id,
                 subject,
                 message.toByteArray())
-                .setResultCallback(object : ResultCallback<MessageApi.SendMessageResult> {
-                    override fun onResult(sendMessageResult: MessageApi.SendMessageResult) {
-                        if (sendMessageResult.status.isSuccess)
-                            Log.d(TAG, "Message sended : " + message)
-                        else
-                            Log.e(TAG, "Message not sended")
-                    }
-                })
+                .setResultCallback { sendMessageResult ->
+                    if (sendMessageResult.status.isSuccess)
+                        Log.d(TAG, "Message sended : $message")
+                    else
+                        Log.e(TAG, "Message not sended")
+                }
     }
 }

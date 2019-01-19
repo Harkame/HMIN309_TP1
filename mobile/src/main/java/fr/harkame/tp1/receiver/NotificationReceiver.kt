@@ -1,6 +1,5 @@
 package fr.harkame.tp1.receiver
 
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -13,7 +12,6 @@ import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import android.util.Log
 import fr.harkame.tp1.R
-import fr.harkame.tp1.activity.MainActivity
 import fr.harkame.tp1.db.contract.EventType
 import fr.harkame.tp1.db.helper.EventDBHelper
 import fr.harkame.tp1.service.notification.NotificationAction
