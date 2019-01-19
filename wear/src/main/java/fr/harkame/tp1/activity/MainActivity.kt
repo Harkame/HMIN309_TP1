@@ -99,9 +99,6 @@ class MainActivity : WearableActivity(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-
-        displayCurrentValues()
-
         displayMaxValues()
 
         deltaX = Math.abs(lastX - event!!.values[0])
