@@ -5,25 +5,21 @@ import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
-import android.os.Bundle
-import android.support.wearable.activity.WearableActivity
-import android.widget.TextView
 import android.hardware.SensorManager
+import android.os.Bundle
 import android.os.Handler
+import android.support.wearable.activity.WearableActivity
 import android.util.Log
 import android.widget.Button
+import android.widget.TextView
 import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.common.api.ResultCallback
-import com.google.android.gms.wearable.MessageApi
 import com.google.android.gms.wearable.Node
-import com.google.android.gms.wearable.NodeApi
 import com.google.android.gms.wearable.Wearable
 import fr.harkame.tp1.R
 import fr.harkame.tp1.service.MessageListenerService
 import java.util.*
 
-class MainActivity : WearableActivity(), SensorEventListener
-{
+class MainActivity : WearableActivity(), SensorEventListener {
     companion object {
         val TAG = "MainActivity"
         val LOCATION_INTERVAL = 10000L
@@ -44,14 +40,14 @@ class MainActivity : WearableActivity(), SensorEventListener
     private var deltaY = 0F
     private var deltaZ = 0F
 
-    private lateinit var speedTextView : TextView
-    private lateinit var startbutton : Button
+    private lateinit var speedTextView: TextView
+    private lateinit var startbutton: Button
 
-    private var started : Boolean = false
+    private var started: Boolean = false
 
     private lateinit var timer: Timer
     private lateinit var timerTask: TimerTask
-    private lateinit var handler : Handler
+    private lateinit var handler: Handler
 
     private val DEFAULT_TIME_START_NOTIFICATION = 10L
 
@@ -67,12 +63,11 @@ class MainActivity : WearableActivity(), SensorEventListener
 
         speedTextView = findViewById(R.id.text_speed)
 
-        startbutton.setOnClickListener{
+        startbutton.setOnClickListener {
 
             val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
-            if(started == true)
-            {
+            if (started == true) {
                 if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
                     sensorManager.unregisterListener(this)
 
@@ -84,8 +79,7 @@ class MainActivity : WearableActivity(), SensorEventListener
 
                     started = false
                 }
-            }
-            else {
+            } else {
                 if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
                     sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL)
 
@@ -116,7 +110,7 @@ class MainActivity : WearableActivity(), SensorEventListener
 
     }
 
-    fun displayCurrentValues() {
+    private fun displayCurrentValues() {
 
     }
 
@@ -138,7 +132,7 @@ class MainActivity : WearableActivity(), SensorEventListener
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
     }
 
-    fun startTimer() {
+    private fun startTimer() {
         timer = Timer()
 
         initializeTimerTask()
@@ -150,19 +144,16 @@ class MainActivity : WearableActivity(), SensorEventListener
         )
     }
 
-    fun stoptimertask()
-    {
+    private fun stoptimertask() {
         timer.cancel()
     }
 
     fun initializeTimerTask() {
 
         handler = Handler()
-        timerTask = object : TimerTask()
-        {
-            override fun run()
-            {
-                handler.post{
+        timerTask = object : TimerTask() {
+            override fun run() {
+                handler.post {
                     resolveNode(speedTextView.text.toString())
                 }
             }
@@ -187,7 +178,6 @@ class MainActivity : WearableActivity(), SensorEventListener
                 }
     }
 
-
     private fun sendMessage(subject: String, message: String) {
         Log.d(TAG, "sendMessage")
 
@@ -195,13 +185,11 @@ class MainActivity : WearableActivity(), SensorEventListener
                 mNode.id,
                 subject,
                 message.toByteArray())
-                .setResultCallback(object : ResultCallback<MessageApi.SendMessageResult> {
-                    override fun onResult(sendMessageResult: MessageApi.SendMessageResult) {
-                        if (sendMessageResult.status.isSuccess)
-                            Log.d(TAG, "Message sended : " + message)
-                        else
-                            Log.e(TAG, "Message not sended")
-                    }
-                })
+                .setResultCallback { sendMessageResult ->
+                    if (sendMessageResult.status.isSuccess)
+                        Log.d(TAG, "Message sended : $message")
+                    else
+                        Log.e(TAG, "Message not sended")
+                }
     }
 }

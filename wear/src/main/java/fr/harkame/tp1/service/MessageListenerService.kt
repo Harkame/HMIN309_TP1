@@ -2,11 +2,11 @@ package fr.harkame.tp1.service
 
 import android.content.Intent
 import android.util.Log
+import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.wearable.MessageEvent
+import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
 import fr.harkame.tp1.activity.MainActivity
-import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.wearable.Wearable
 
 class MessageListenerService : WearableListenerService() {
 

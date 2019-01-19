@@ -1,25 +1,25 @@
 package fr.harkame.tp1.service.notification
 
+import android.app.IntentService
+import android.app.Notification
+import android.app.PendingIntent
 import android.content.Intent
-import android.util.Log
-import android.app.*
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
-import fr.harkame.tp1.db.model.Event
-import fr.harkame.tp1.db.helper.EventDBHelper
-import com.google.android.gms.wearable.MessageApi
+import android.util.Log
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.ResultCallback
 import com.google.android.gms.wearable.Node
-import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.NodeApi
+import com.google.android.gms.wearable.Wearable
 import fr.harkame.tp1.R
 import fr.harkame.tp1.activity.MainActivity
 import fr.harkame.tp1.db.contract.EventType
+import fr.harkame.tp1.db.helper.EventDBHelper
+import fr.harkame.tp1.db.model.Event
 
 
-class NotificationAction : IntentService("NotificationAction")
-{
+class NotificationAction : IntentService("NotificationAction") {
     companion object {
         const val TAG = "NotificationIntentServi" //23char
 
@@ -63,7 +63,7 @@ class NotificationAction : IntentService("NotificationAction")
             handleActionStartSportActivity(event, notificationID)
     }
 
-    private fun handleActionDismiss(event : Event, notificationID : Int) {
+    private fun handleActionDismiss(event: Event, notificationID: Int) {
         Log.d(TAG, "handleActionDismiss")
 
         val notificationManagerCompat = NotificationManagerCompat.from(applicationContext)
@@ -72,7 +72,7 @@ class NotificationAction : IntentService("NotificationAction")
         eventDBHelper.updateNotification(event.id, 0)
     }
 
-    private fun handleActionReport(event : Event, reportTime : Long, notificationID : Int) {
+    private fun handleActionReport(event: Event, reportTime: Long, notificationID: Int) {
         Log.d(TAG, "handleActionReport")
 
         val notificationManagerCompat = NotificationManagerCompat.from(applicationContext)
@@ -88,7 +88,7 @@ class NotificationAction : IntentService("NotificationAction")
         notificationManagerCompat.notify(notificationID, createNotification(event, notificationID))
     }
 
-    private fun handleActionStartSportActivity(event : Event, notificationID : Int) {
+    private fun handleActionStartSportActivity(event: Event, notificationID: Int) {
         Log.d(TAG, "handleActionStartSportActivity")
 
         val notificationManagerCompat = NotificationManagerCompat.from(applicationContext)
@@ -136,8 +136,7 @@ class NotificationAction : IntentService("NotificationAction")
                 }
     }
 
-    fun createNotification(event: Event, notificationID: Int) : Notification
-    {
+    fun createNotification(event: Event, notificationID: Int): Notification {
         Log.d(TAG, "createNotification")
 
         var intent = Intent(this, MainActivity::class.java)
@@ -197,8 +196,7 @@ class NotificationAction : IntentService("NotificationAction")
                 .addAction(reportShortAction)
                 .addAction(reportlongAction)
 
-        if(event.type == EventType.eventTypes[0])
-        {
+        if (event.type == EventType.eventTypes[0]) {
             val startSportActivityIntent = Intent(this, NotificationAction::class.java)
             startSportActivityIntent.action = NotificationAction.ACTION_START_SPORT_ACTIVITY
 
