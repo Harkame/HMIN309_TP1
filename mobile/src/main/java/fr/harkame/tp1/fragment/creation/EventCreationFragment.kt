@@ -73,7 +73,10 @@ class EventCreationFragment : Fragment() {
 
         eventCreationDateButton.text = DateUtils.dateTimeToString(currentDateTime)
 
-        eventCreationTimeButton.text = "${currentDateTime.hourOfDay}:${currentDateTime.minuteOfHour}"
+        if(currentDateTime.minuteOfHour < 10)
+            eventCreationTimeButton.text = "${currentDateTime.hourOfDay}:0${currentDateTime.minuteOfHour}"
+        else
+            eventCreationTimeButton.text = "${currentDateTime.hourOfDay}:${currentDateTime.minuteOfHour}"
 
         buttonType = view.findViewById(R.id.eventCreationType)
 
@@ -106,7 +109,10 @@ class EventCreationFragment : Fragment() {
         eventCreationTimeButton.setOnClickListener {
             val timePickerDialog = TimePickerDialog(this.context, TimePickerDialog.OnTimeSetListener(function = { _, hourOfDay, minuteOfHour ->
 
-                eventCreationTimeButton.text = "$hourOfDay:$minuteOfHour"
+                if(minuteOfHour < 10)
+                    eventCreationTimeButton.text = "$hourOfDay:0$minuteOfHour"
+                else
+                    eventCreationTimeButton.text = "$hourOfDay:0$minuteOfHour"
 
             }), currentDateTime.hourOfDay, currentDateTime.minuteOfHour, false)
 

@@ -21,9 +21,13 @@ class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         Log.d(TAG, "onReceive")
 
-        val events = EventDBHelper(context).readAllNowEvents()
+        val events = EventDBHelper(context).readAllNowEvents();
 
-        for (event in events) {
+        for (event in events)
+        {
+            if(!event.notification)
+                continue
+
             NOTIFICATION_ID++
 
             val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
