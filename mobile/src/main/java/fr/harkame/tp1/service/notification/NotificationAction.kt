@@ -166,7 +166,7 @@ class NotificationAction : IntentService("NotificationAction") {
         val reportShortPendingIntent = PendingIntent.getService(this, 0, reportShortIntent, 0)
 
         val reportShortAction = android.support.v4.app.NotificationCompat.Action.Builder(
-                R.drawable.ic_alarm,
+                R.mipmap.ic_clock,
                 "Report : 5 minutes",
                 reportShortPendingIntent)
                 .build()
@@ -179,7 +179,7 @@ class NotificationAction : IntentService("NotificationAction") {
 
         val reportLongPendingIntentService = PendingIntent.getService(this, 0, reportLongIntent, 0)
         val reportlongAction = android.support.v4.app.NotificationCompat.Action.Builder(
-                R.drawable.ic_alarm,
+                R.mipmap.ic_clock,
                 "Report : 1 heure",
                 reportLongPendingIntentService)
                 .build()
@@ -205,7 +205,7 @@ class NotificationAction : IntentService("NotificationAction") {
 
             val startSportActivityPendingIntentService = PendingIntent.getService(this, 0, startSportActivityIntent, 0)
             val startSportActivitygAction = android.support.v4.app.NotificationCompat.Action.Builder(
-                    R.drawable.ic_alarm,
+                    R.mipmap.ic_sport,
                     "Commencer activité sportive",
                     startSportActivityPendingIntentService)
                     .build()
