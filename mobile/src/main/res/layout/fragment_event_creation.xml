@@ -1,20 +1,16 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content">
-
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="fill_parent"
+android:layout_height="wrap_content">
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="30dp"
-            android:gravity="start"
-            android:orientation="vertical">
+            android:orientation="vertical" >
 
             <TextView
                 android:layout_width="wrap_content"
@@ -24,9 +20,10 @@
                 android:textSize="32sp" />
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal" >
+
 
                 <EditText
                     android:id="@+id/eventCreationName"
@@ -34,7 +31,9 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/example_my_event"
                     android:singleLine="true"
-                    android:textSize="22sp" />
+                    android:textSize="22sp"
+                    android:inputType="text"
+                    tools:ignore="Autofill" />
 
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/eventCreationNameError"
@@ -47,14 +46,9 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="100sp"
-            android:gravity="start"
-            android:orientation="vertical">
+            android:orientation="vertical" >
 
             <TextView
                 android:layout_width="wrap_content"
@@ -70,14 +64,9 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="200sp"
-            android:gravity="start"
-            android:orientation="vertical">
+            android:orientation="vertical" >
 
             <TextView
                 android:layout_width="wrap_content"
@@ -93,14 +82,9 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="300sp"
-            android:gravity="start"
-            android:orientation="vertical">
+            android:orientation="vertical" >
 
             <TextView
                 android:layout_width="wrap_content"
@@ -120,14 +104,9 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="400sp"
-            android:gravity="start"
-            android:orientation="vertical">
+            android:orientation="vertical" >
 
             <TextView
                 android:layout_width="wrap_content"
@@ -142,28 +121,19 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/example_training"
                 android:singleLine="true"
-                android:textSize="22sp" />
+                android:textSize="22sp"
+                android:inputType="text"
+                tools:ignore="Autofill" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="475sp"
-            android:gravity="start"
-            android:orientation="vertical">
-
-            <Button
-                android:id="@+id/eventCreationValidate"
-                android:layout_width="wrap_content"
-                android:layout_height="50sp"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:background="@drawable/ripple_effect"
-                android:gravity="center_vertical|center_horizontal"
-                android:text="@string/create"
-                android:textColor="@color/white" />
-        </LinearLayout>
-    </RelativeLayout>
+        <Button
+            android:id="@+id/eventCreationValidate"
+            android:layout_width="wrap_content"
+            android:layout_height="50sp"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:background="@drawable/ripple_effect"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="@string/create"
+            android:textColor="@color/white" />
+    </LinearLayout>
 </ScrollView>
