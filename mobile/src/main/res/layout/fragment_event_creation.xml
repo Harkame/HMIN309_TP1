@@ -95,7 +95,7 @@ android:layout_height="wrap_content">
                 android:textColor="@color/colorAccent"
                 android:textSize="32sp" />
 
-            <Button
+            <Spinner
                 android:id="@+id/eventCreationType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

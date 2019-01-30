@@ -29,14 +29,21 @@ import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import java.util.*
 
-class EventCreationFragment : Fragment() {
+class EventCreationFragment : Fragment(), AdapterView.OnItemSelectedListener {
+    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+
+    }
+
+    override fun onNothingSelected(p0: AdapterView<*>?) {
+    }
+
     companion object {
         private const val TAG = "EventCreationFragment"
     }
 
     private lateinit var eventDBHelper: EventDBHelper
 
-    private lateinit var buttonType: Button
+    private lateinit var spinnerType: Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,20 +85,16 @@ class EventCreationFragment : Fragment() {
         else
             eventCreationTimeButton.text = "${currentDateTime.hourOfDay}:${currentDateTime.minuteOfHour}"
 
-        buttonType = view.findViewById(R.id.eventCreationType)
+        spinnerType = view.findViewById(R.id.eventCreationType)
 
-        buttonType.setOnClickListener {
+        spinnerType.onItemSelectedListener = this
 
-            val builder = AlertDialog.Builder(context)
-            builder.setTitle("Event type")
+        // Create an ArrayAdapter using a simple spinner layout and languages array
+        val aa = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, EventType.eventTypes)
+        // Set layout to use when the list of choices appear
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-            builder.setItems(EventType.eventTypes) { _, which ->
-                buttonType.text = EventType.getTypeFromID(which)
-            }
-
-            val dialog = builder.create()
-            dialog.show()
-        }
+        spinnerType.adapter = aa
 
         eventCreationDateButton.setOnClickListener {
             val now = Calendar.getInstance()
@@ -142,7 +145,7 @@ class EventCreationFragment : Fragment() {
 
             val eventTime = view.findViewById<Button>(R.id.eventCreationTime).text.toString()
 
-            event.type = buttonType.text.toString()
+            event.type = spinnerType.selectedItem.toString()
 
             event.description = view.findViewById<EditText>(R.id.eventCreationDescription).text.toString()
 
