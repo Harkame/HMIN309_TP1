@@ -96,11 +96,10 @@
                 android:textColor="@color/colorAccent"
                 android:textSize="32sp" />
 
-            <Button
+            <Spinner
                 android:id="@+id/eventDetailsType"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ripple_effect"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
                 android:gravity="center_vertical|center_horizontal"
                 android:text="@string/sport"
                 android:textColor="@color/white" />

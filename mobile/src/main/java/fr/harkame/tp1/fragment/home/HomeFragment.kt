@@ -1,21 +1,18 @@
 package fr.harkame.tp1.fragment.home
 
+import fr.harkame.tp1.R
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
-import fr.harkame.tp1.adapter.HomeEventAdapter
-import fr.harkame.tp1.db.helper.EventDBHelper
-import fr.harkame.tp1.R
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
-import android.text.Editable
-import android.text.TextWatcher
 import android.widget.SearchView
-import android.widget.TextView
 import fr.harkame.tp1.activity.MainActivity
+import fr.harkame.tp1.adapter.HomeEventAdapter
+import fr.harkame.tp1.db.helper.EventDBHelper
 
 class HomeFragment : Fragment() {
     companion object {
@@ -67,7 +64,7 @@ class HomeFragment : Fragment() {
             }
 
             override fun beforeTextChanged(arg0: CharSequence, arg1: Int, arg2: Int, arg3 : Int)
-            {
+            {./
             }
 
             override fun afterTextChanged(arg0: Editable)

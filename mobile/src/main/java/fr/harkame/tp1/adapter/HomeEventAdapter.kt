@@ -5,16 +5,14 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import fr.harkame.tp1.fragment.home.ViewHolder
 import android.widget.CheckBox
 import android.widget.TextView
-import fr.harkame.tp1.R
-import fr.harkame.tp1.db.model.Event
-import fr.harkame.tp1.db.helper.EventDBHelper
 import fr.harkame.tp1.activity.MainActivity
+import fr.harkame.tp1.db.helper.EventDBHelper
+import fr.harkame.tp1.db.model.Event
+import fr.harkame.tp1.R
 
-
-class HomeEventAdapter internal constructor(private val mycontext: Context, private val list: List<Event>, private val activity : MainActivity) : ArrayAdapter<Event>(mycontext,R.layout.event_row, list) {
+class HomeEventAdapter internal constructor(private val mycontext: Context, private val list: List<Event>, private val activity : MainActivity) : ArrayAdapter<Event>(mycontext, R.layout.event_row, list) {
 
     private var eventDBHelper = EventDBHelper(this.context)
 
@@ -49,27 +47,45 @@ class HomeEventAdapter internal constructor(private val mycontext: Context, priv
             val inflater = (context as Activity).layoutInflater
             rowView = inflater.inflate(R.layout.event_row, null)
 
-            viewHolder.checkBox = rowView.findViewById(R.id.rowEventCheckBox) as CheckBox
-            viewHolder.text = rowView.findViewById(R.id.rowEventText) as TextView
+            viewHolder.activeNotification = rowView.findViewById(R.id.rowEventCheckBox) as CheckBox
+            viewHolder.eventName = rowView.findViewById(R.id.rowEventName) as TextView
+            viewHolder.eventType = rowView.findViewById(R.id.rowEventType) as TextView
+            viewHolder.eventDate = rowView.findViewById(R.id.rowEventDate) as TextView
+
             rowView.tag = viewHolder
+
         } else {
             viewHolder = rowView.tag as ViewHolder
         }
 
-        viewHolder.checkBox!!.isChecked = !list[position].notification
+        viewHolder.activeNotification!!.isChecked = !list[position].notification
 
         val event = list[position]
-        viewHolder.text!!.text = event.toString()
+        viewHolder.eventName!!.text = event.name
+        viewHolder.eventType!!.text = event.type
+        viewHolder.eventDate!!.text = event.dateText
 
-        viewHolder.checkBox!!.tag = position
+        viewHolder.activeNotification!!.tag = position
 
-        viewHolder.text!!.setOnClickListener{
+        viewHolder.eventName!!.setOnClickListener{
             val eventModel = list[position]
 
             activity.pushDetailsFragment(eventModel)
         }
 
-        viewHolder.checkBox!!.setOnClickListener {
+        viewHolder.eventType!!.setOnClickListener{
+            val eventModel = list[position]
+
+            activity.pushDetailsFragment(eventModel)
+        }
+
+        viewHolder.eventDate!!.setOnClickListener{
+            val eventModel = list[position]
+
+            activity.pushDetailsFragment(eventModel)
+        }
+
+        viewHolder.activeNotification!!.setOnClickListener {
             val newState = !list[position].notification
             list[position].notification = newState
 
@@ -83,7 +99,7 @@ class HomeEventAdapter internal constructor(private val mycontext: Context, priv
             eventDBHelper.updateNotification(eventModel.id, notifictionActivated)
         }
 
-        viewHolder.checkBox!!.isChecked = isChecked(position)
+        viewHolder.activeNotification!!.isChecked = isChecked(position)
 
         return rowView!!
     }

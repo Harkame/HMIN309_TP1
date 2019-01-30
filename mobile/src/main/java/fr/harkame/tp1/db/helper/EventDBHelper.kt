@@ -11,8 +11,6 @@ import fr.harkame.tp1.db.contract.DBContract
 import fr.harkame.tp1.db.contract.EventType
 import fr.harkame.tp1.db.model.Event
 import org.joda.time.DateTime
-import java.util.*
-import kotlin.collections.ArrayList
 
 class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
@@ -59,8 +57,6 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         values.put(DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION, event.notification)
 
         database.insert(DBContract.EventEntry.TABLE_NAME, null, values)
-
-        val i = readAllEvents()
 
         return true
     }
@@ -200,9 +196,7 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
     {
         val database = writableDatabase
 
-        val i = database.delete(DBContract.EventEntry.TABLE_NAME, DBContract.EventEntry.COLUMN_EVENT_DATE_TIME + "<?",  arrayOf((DateTime.now().millis - 60000).toString()))
-
-        //database.rawQuery("DELETE FROM " + DBContract.EventEntry.TABLE_NAME + " WHERE " + DBContract.EventEntry.COLUMN_EVENT_DATE_TIME + " < " + DateTime.now().millis, null).close()
+        database.delete(DBContract.EventEntry.TABLE_NAME, DBContract.EventEntry.COLUMN_EVENT_DATE_TIME + "<?",  arrayOf((DateTime.now().millis - 60000).toString()))
     }
 
     private fun resetDatabase() {

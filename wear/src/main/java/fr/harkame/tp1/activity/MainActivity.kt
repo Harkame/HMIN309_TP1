@@ -1,5 +1,6 @@
 package fr.harkame.tp1.activity
 
+import fr.harkame.tp1.R
 import android.content.Context
 import android.content.Intent
 import android.hardware.Sensor
@@ -15,32 +16,18 @@ import android.widget.TextView
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
-import fr.harkame.tp1.R
 import fr.harkame.tp1.service.MessageListenerService
+import fr.harkame.tp1.util.sensor.step.StepDetector
+import fr.harkame.tp1.util.sensor.step.StepListener
 import java.util.*
 
-class MainActivity : WearableActivity(), SensorEventListener {
+class MainActivity : WearableActivity(), SensorEventListener, StepListener {
     companion object {
-        val TAG = "MainActivity"
-        val LOCATION_INTERVAL = 10000L
-        val LOCATION_DISTANCE = 10f
-
+        const val TAG = "MainActivity"
         private const val WEAR_DATA_PATH = "/wear-data"
     }
 
-    private val lastX: Float = 0F
-    var lastY: Float = 0F
-    var lastZ: Float = 0F
-
-    private var deltaXMax = 0F
-    private var deltaYMax = 0F
-    private var deltaZMax = 0F
-
-    private var deltaX = 0F
-    private var deltaY = 0F
-    private var deltaZ = 0F
-
-    private lateinit var speedTextView: TextView
+    private lateinit var stepTextview: TextView
     private lateinit var startbutton: Button
 
     private var started: Boolean = false
@@ -55,25 +42,30 @@ class MainActivity : WearableActivity(), SensorEventListener {
 
     private lateinit var mNode: Node
 
+    private var stepCounter : Int = 0
+    private lateinit var stepDetector : StepDetector
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         startbutton = findViewById(R.id.button_start)
 
-        speedTextView = findViewById(R.id.text_speed)
+        stepTextview = findViewById(R.id.text_speed)
 
         startbutton.setOnClickListener {
 
             val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
-            if (started == true) {
+            if (started) {
                 if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
                     sensorManager.unregisterListener(this)
 
                     startbutton.text = getString(R.string.start)
 
-                    speedTextView.text = "0.0"
+                    stepTextview.text = "0"
+
+                    stepCounter = 0
 
                     stoptimertask()
 
@@ -94,33 +86,24 @@ class MainActivity : WearableActivity(), SensorEventListener {
 
         startService(Intent(this, MessageListenerService::class.java))
 
+        stepDetector = StepDetector()
+        stepDetector.registerListener(this)
+
         setAmbientEnabled()
     }
 
-    override fun onSensorChanged(event: SensorEvent?) {
-        displayMaxValues()
+    override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
 
-        deltaX = Math.abs(lastX - event!!.values[0])
-        deltaY = Math.abs(lastY - event.values[1])
-        deltaZ = Math.abs(lastZ - event.values[2])
-    }
-
-    private fun displayMaxValues() {
-        if (deltaX > deltaXMax) {
-            deltaXMax = deltaX
-            speedTextView.text = java.lang.Float.toString(deltaXMax)
-        }
-        if (deltaY > deltaYMax) {
-            deltaYMax = deltaY
-            speedTextView.text = java.lang.Float.toString(deltaYMax)
-        }
-        if (deltaZ > deltaZMax) {
-            deltaZMax = deltaZ
-            speedTextView.text = java.lang.Float.toString(deltaZMax)
+    override fun onSensorChanged(event: SensorEvent) {
+        if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
+            stepDetector.updateAccel(
+                    event.timestamp, event.values[0], event.values[1], event.values[2])
         }
     }
 
-    override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
+    override fun step(timeNs: Long) {
+        stepCounter++
+        stepTextview.text = stepCounter.toString()
     }
 
     private fun startTimer() {
@@ -145,7 +128,7 @@ class MainActivity : WearableActivity(), SensorEventListener {
         timerTask = object : TimerTask() {
             override fun run() {
                 handler.post {
-                    resolveNode(speedTextView.text.toString())
+                    resolveNode(stepTextview.text.toString())
                 }
             }
         }

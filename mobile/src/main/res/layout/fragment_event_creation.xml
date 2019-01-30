@@ -61,8 +61,8 @@ android:layout_height="wrap_content">
 
             <Button
                 android:id="@+id/eventCreationDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_width="200dp"
+                android:layout_height="50dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -79,8 +79,8 @@ android:layout_height="wrap_content">
 
             <Button
                 android:id="@+id/eventCreationTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_width="200dp"
+                android:layout_height="50dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -97,9 +97,8 @@ android:layout_height="wrap_content">
 
             <Spinner
                 android:id="@+id/eventCreationType"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ripple_effect"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
                 android:gravity="center_vertical|center_horizontal"
                 android:text="@string/sport"
                 android:textColor="@color/white" />

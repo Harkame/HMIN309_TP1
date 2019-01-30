@@ -1,31 +1,30 @@
 package fr.harkame.tp1.fragment.details
 
-import android.app.AlertDialog
-import android.app.DatePickerDialog
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Editable
 import android.util.Log
-import android.widget.Button
-import fr.harkame.tp1.R
-import fr.harkame.tp1.db.contract.EventType
-import fr.harkame.tp1.db.helper.EventDBHelper
-import java.util.*
-import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Toast
-import fr.harkame.tp1.db.model.Event
-import org.joda.time.format.DateTimeFormat
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.*
 import fr.harkame.tp1.activity.MainActivity
-import kotlinx.android.synthetic.main.fragment_event_details.*
+import fr.harkame.tp1.db.contract.EventType
+import fr.harkame.tp1.db.helper.EventDBHelper
+import fr.harkame.tp1.db.model.Event
+import fr.harkame.tp1.R
 
-
-class EventDetailsFragment  : Fragment()
+class EventDetailsFragment  : Fragment(), AdapterView.OnItemSelectedListener
 {
+    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+
+    }
+
+    override fun onNothingSelected(p0: AdapterView<*>?) {
+
+    }
+
     companion object
     {
         private const val TAG = "EventDetailsFragment"
@@ -41,7 +40,7 @@ class EventDetailsFragment  : Fragment()
 
     private lateinit var eventDBHelper : EventDBHelper
 
-    private lateinit var buttonType : Button
+    private lateinit var spinnerType: Spinner
 
     private lateinit var event : Event
 
@@ -75,22 +74,15 @@ class EventDetailsFragment  : Fragment()
             }
         }
 
-        buttonType = view.findViewById(R.id.eventDetailsType)
+        spinnerType = view.findViewById(R.id.eventCreationType)
 
-        buttonType.text = event.type
+        spinnerType.onItemSelectedListener = this
 
-        buttonType.setOnClickListener {
+        val aa = ArrayAdapter(context!!, R.layout.simple_spinner_item, EventType.eventTypes)
 
-            val builder = AlertDialog.Builder(this.context!!)
-            builder.setTitle("Event type")
+        //aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-            builder.setItems(EventType.eventTypes) { _, which ->
-                buttonType.text = EventType.getTypeFromID(which)
-            }
-
-            val dialog = builder.create()
-            dialog.show()
-        }
+        //innerType.adapter = aa
 
         val eventDetailsDescriptionEditText = view.findViewById<EditText>(R.id.eventDetailsDescription)
 
@@ -114,7 +106,7 @@ class EventDetailsFragment  : Fragment()
 
             if (validEvent) {
                 event.name = eventDetailsNameEditText.text.toString()
-                event.type = eventDetailsType.text.toString()
+                event.type = spinnerType.selectedItem.toString()
                 event.description = eventDetailsDescriptionEditText.text.toString()
 
                 eventDBHelper.updateEvent(event)

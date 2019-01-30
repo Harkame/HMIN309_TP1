@@ -1,56 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mainFrameLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="fr.harkame.tp1.activity.MainActivity">
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+>
+    <ImageView
         android:layout_height="match_parent"
-        android:scrollbars="vertical" />
+        android:layout_width="wrap_content"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_walk"
+        android:tint="@color/colorAccent"
+        android:contentDescription="@string/walk"
+        android:paddingTop="10dp"
+    />
 
-    <LinearLayout
-        android:layout_width="fill_parent"
+    <TextView
+        android:id="@+id/text_speed"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:textAlignment="center"
+        android:background="@color/grey"
+        android:layout_marginTop="10dp"
+        android:text="@string/default_speed"
+        android:paddingTop="20dp"
+    />
 
-        <TextView
-            android:id="@+id/text_speed"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:paddingTop="@dimen/activity_main_text_header_spacing"
-            android:paddingBottom="@dimen/activity_main_text_header_spacing"
-            android:background="@color/grey"
-            android:text="@string/default_speed"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
+    <Button
+        android:id="@+id/button_start"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:orientation="vertical"
-        android:gravity="center"
-        >
-
-        <Button
-            android:id="@+id/button_start"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:paddingTop="@dimen/activity_main_text_header_spacing"
-            android:paddingBottom="@dimen/activity_main_text_header_spacing"
-            android:background="@color/grey"
-            android:text="@string/start"
-            />
-    </LinearLayout>
-
-</FrameLayout>
+        android:textAlignment="center"
+        android:background="@color/grey"
+        android:layout_marginTop="10dp"
+        android:text="@string/start"
+        android:paddingTop="60dp"
+    />
+</LinearLayout>
