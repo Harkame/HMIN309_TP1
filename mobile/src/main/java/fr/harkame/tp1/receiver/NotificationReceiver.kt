@@ -94,7 +94,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
                 val startSportActivityPendingIntentService = PendingIntent.getService(context, 0, startSportActivityIntent, 0)
                 val startSportActivitygAction = android.support.v4.app.NotificationCompat.Action.Builder(
-                        R.drawable.ic_alarm,
+                        R.drawable.ic_walk,
                         "Commencer activité sportive",
                         startSportActivityPendingIntentService)
                         .build()
