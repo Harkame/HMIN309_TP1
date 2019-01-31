@@ -138,29 +138,18 @@ class EventDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         database.execSQL("UPDATE " + DBContract.EventEntry.TABLE_NAME + " SET " + DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION + " = " + notification + " WHERE " + DBContract.EventEntry.COLUMN_EVENT_ID + " = " + eventId)
     }
 
-    fun readAllEventsForToday(): ArrayList<Event> {
-        removeOldEvents()
-
+    fun readAllEventsByValue(typedText: CharSequence): ArrayList<Event> {
         val database = writableDatabase
 
         val cursor: Cursor?
 
-        try {
-            cursor = database.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " WHERE " + DBContract.EventEntry.COLUMN_EVENT_NOTIFICATION + " = 1 " + " ORDER BY event_date ASC", null)
-        } catch (e: SQLiteException) {
-            return ArrayList()
-        }
-
-        return cursorToList(cursor)
-    }
-
-    fun readAllEventsByNameOrByDate(typedText: CharSequence): ArrayList<Event> {
-        val database = writableDatabase
-
-        val cursor: Cursor?
+        var eventType : Int = EventType.getIdFromTypePrefix(typedText.toString())
 
         try {
-            cursor = database.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " WHERE " + DBContract.EventEntry.COLUMN_EVENT_NAME + " LIKE  '" + typedText + "%' OR " + DBContract.EventEntry.COLUMN_EVENT_DATE_TIME_TEXT + " LIKE  '" + typedText + "%'", null)
+            cursor = database.rawQuery("SELECT * FROM " + DBContract.EventEntry.TABLE_NAME + " WHERE "
+                    + DBContract.EventEntry.COLUMN_EVENT_NAME + " LIKE  '" + typedText + "%' OR "
+                    + DBContract.EventEntry.COLUMN_EVENT_TYPE + " = " + eventType + " OR "
+                    + DBContract.EventEntry.COLUMN_EVENT_DATE_TIME_TEXT + " LIKE  '" + typedText + "%'", null)
         } catch (sqliteException: SQLiteException) {
             sqliteException.printStackTrace();
             return ArrayList()

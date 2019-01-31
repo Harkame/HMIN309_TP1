@@ -74,15 +74,15 @@ class EventDetailsFragment  : Fragment(), AdapterView.OnItemSelectedListener
             }
         }
 
-        spinnerType = view.findViewById(R.id.eventCreationType)
+        spinnerType = view.findViewById(R.id.eventDetailsType)
 
         spinnerType.onItemSelectedListener = this
 
-        val aa = ArrayAdapter(context!!, R.layout.simple_spinner_item, EventType.eventTypes)
+        val aa = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, EventType.eventTypes)
 
-        //aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-        //innerType.adapter = aa
+        spinnerType.adapter = aa
 
         val eventDetailsDescriptionEditText = view.findViewById<EditText>(R.id.eventDetailsDescription)
 

@@ -51,28 +51,6 @@ class HomeFragment : Fragment() {
 
         val inputSearchView = view.findViewById<SearchView>(R.id.input_search)
 
-        /*
-        inputSearchView.addTextChangedListener(object : TextWatcher
-        {
-            override fun onTextChanged(charSequence: CharSequence, arg1: Int, arg2: Int, arg3: Int)
-            {
-                val events = eventDBHelper.readAllEventsByNameOrByDate(charSequence)
-
-                homeEventAdapter = HomeEventAdapter(currentContext, events, activity as MainActivity)
-
-                eventList.adapter = homeEventAdapter
-            }
-
-            override fun beforeTextChanged(arg0: CharSequence, arg1: Int, arg2: Int, arg3 : Int)
-            {./
-            }
-
-            override fun afterTextChanged(arg0: Editable)
-            {
-            }
-        })
-        */
-
         inputSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
 
@@ -81,7 +59,7 @@ class HomeFragment : Fragment() {
 
             override fun onQueryTextChange(newText: String): Boolean {
 
-                val events = eventDBHelper.readAllEventsByNameOrByDate(newText)
+                val events = eventDBHelper.readAllEventsByValue(newText)
 
                 homeEventAdapter = HomeEventAdapter(currentContext, events, activity as MainActivity)
 

@@ -25,8 +25,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var eventDBHelper: EventDBHelper
 
+    private lateinit var  fragment : Fragment
+
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        var fragment: Fragment
 
         when (item.itemId) {
             R.id.navigation_home -> {
@@ -99,7 +100,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun pushDetailsFragment(event: Event) {
-        val fragment = EventDetailsFragment.newInstance(event)
+        fragment = EventDetailsFragment.newInstance(event)
 
         supportFragmentManager
                 .beginTransaction()
