@@ -83,7 +83,7 @@ class NotificationReceiver : BroadcastReceiver() {
                     .setChannelId(CHANNEL_ID)
                     .addAction(dismissAction)
                     .addAction(reportShortAction)
-                    .addAction(reportlongAction)
+                    //.addAction(reportlongAction)
 
             if (event.type == EventType.eventTypes[0]) {
                 val startSportActivityIntent = Intent(context, NotificationAction::class.java)
@@ -101,9 +101,6 @@ class NotificationReceiver : BroadcastReceiver() {
 
                 buildedNotification.addAction(startSportActivitygAction)
             }
-
-
-            val managerCompat = NotificationManagerCompat.from(context)
 
             val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
