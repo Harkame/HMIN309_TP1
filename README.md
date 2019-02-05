@@ -8,7 +8,6 @@ Event manager, use Android Wear
  + Géolocalisation
  + Notification sur le téléphone et sur la montre
   + notification qui permet de lancer une activité sur la montre(utilisation des capteurs)
- + synchronisation 
   
 # Installation : 
   
