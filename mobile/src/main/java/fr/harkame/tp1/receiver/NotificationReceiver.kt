@@ -9,9 +9,7 @@ import android.content.Intent
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
-import android.support.v4.app.NotificationManagerCompat
 import android.util.Log
-import fr.harkame.tp1.R
 import fr.harkame.tp1.db.contract.EventType
 import fr.harkame.tp1.db.helper.EventDBHelper
 import fr.harkame.tp1.service.notification.NotificationAction
@@ -21,7 +19,7 @@ class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         Log.d(TAG, "onReceive")
 
-        val events = EventDBHelper(context).readAllNowEvents();
+        val events = EventDBHelper(context).readAllNowEvents()
 
         for (event in events)
         {
@@ -60,6 +58,7 @@ class NotificationReceiver : BroadcastReceiver() {
                     reportShortPendingIntent)
                     .build()
 
+            /*
             val reportLongIntent = Intent(context, NotificationAction::class.java)
             reportLongIntent.action = NotificationAction.ACTION_REPORT_LONG
 
@@ -67,15 +66,16 @@ class NotificationReceiver : BroadcastReceiver() {
             reportLongIntent.putExtra("notification_id", NOTIFICATION_ID)
 
             val reportLongPendingIntentService = PendingIntent.getService(context, 0, reportLongIntent, 0)
+
             val reportlongAction = android.support.v4.app.NotificationCompat.Action.Builder(
                     R.drawable.ic_alarm,
                     "Report : 1 heure",
                     reportLongPendingIntentService)
                     .build()
-
+            */
             val notificationCompatBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
 
-            var buildedNotification = notificationCompatBuilder
+            val buildedNotification = notificationCompatBuilder
                     .setContentIntent(pendingIntent)
                     .setSmallIcon(R.drawable.ic_notification)
                     .setContentTitle("Evenement Aujourd'hui : " + event.name)
@@ -99,17 +99,18 @@ class NotificationReceiver : BroadcastReceiver() {
                         startSportActivityPendingIntentService)
                         .build()
 
+
                 buildedNotification.addAction(startSportActivitygAction)
             }
 
             val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val channelId = "YOUR_CHANNEL_ID";
+                val channelId = "YOUR_CHANNEL_ID"
                 val channel = NotificationChannel(channelId,
                         "Channel human readable title",
-                        NotificationManager.IMPORTANCE_DEFAULT);
-                mNotificationManager.createNotificationChannel(channel);
+                        NotificationManager.IMPORTANCE_DEFAULT)
+                mNotificationManager.createNotificationChannel(channel)
                 buildedNotification.setChannelId(channelId)
             }
 
