@@ -18,3 +18,7 @@ Puis il faudra taper la commande :
 ```adb -d forward tcp:5601 tcp:5601```  
 
 Pour le reste il suffit de récupérer le projet, de le build puis de l'exécuter
+
+npm install
+
+ionic cordova run android
